@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intelligent Academic ERP | Sign In</title>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap");
+:root {
+  --bg-1:#070d1f; --bg-2:#121a3f; --bg-3:#09383d;
+  --aura-1:#1b3d84; --aura-2:#14526d;
+  --accent-a:#79b7ff; --accent-b:#3dd3c3; --accent-luxe:#d8bd84;
+  --text-main:#ecf2ff; --text-soft:#b7c5e4;
+  --line-soft:rgba(219,230,255,.23); --line-focus:rgba(139,189,255,.86);
+  --danger:#ff5d74; --panel-dark:rgba(8,18,46,.78); --panel-glass:rgba(9,16,43,.58);
+  --card-shadow:0 26px 72px rgba(1,5,20,.6),0 10px 28px rgba(11,35,92,.35);
+  --card-shadow-hover:0 34px 86px rgba(1,5,20,.68),0 16px 38px rgba(11,35,92,.42);
+  --surface-outline:rgba(205,220,255,.26);
+  --curve:cubic-bezier(.22,.61,.36,1);
+  --btn-gradient:linear-gradient(110deg,rgba(37,92,189,.95),rgba(23,140,150,.9) 62%,rgba(216,189,132,.66));
+  --font-ui:"Inter","Segoe UI",Arial,sans-serif;
+  --font-display:"Plus Jakarta Sans","Inter",sans-serif;
+  --fs-0:.78rem; --fs-1:.86rem; --fs-2:.95rem; --fs-5:clamp(1.8rem,3.8vw,2.35rem);
+  --radius-sm:12px; --radius-lg:22px;
+  --spot-x:50%; --spot-y:40%;
+  --icon-safe-left:24%;
+  --icon-safe-right:76%;
+}
+* { box-sizing:border-box; }
+html,body {
+  margin:0; min-height:100%; width:100%; color:var(--text-main);
+  font-family:var(--font-ui); overflow-x:hidden;
+  background:radial-gradient(125% 120% at -10% -8%,var(--aura-1) 0%,transparent 45%),
+  radial-gradient(110% 90% at 104% 0%,var(--aura-2) 0%,transparent 38%),
+  linear-gradient(130deg,var(--bg-1),var(--bg-2) 50%,var(--bg-3));
+}
+.spotlight-layer { position:fixed; inset:0; pointer-events:none; z-index:0;
+  background:radial-gradient(560px circle at var(--spot-x) var(--spot-y),rgba(124,182,255,.16),transparent 68%); }
+.cursor-neon-layer { position:fixed; inset:0; pointer-events:none; z-index:3; overflow:hidden; }
+.cursor-neon-canvas { width:100%; height:100%; display:block; }
+.orb-field,.bg-icons { position:fixed; inset:0; z-index:0; overflow:hidden; }
+.orb-field { pointer-events:none; }
+.bg-icons {
+  pointer-events:none; z-index:2;
+  -webkit-mask-image:linear-gradient(to right,#000 0,#000 var(--icon-safe-left),transparent var(--icon-safe-left),transparent var(--icon-safe-right),#000 var(--icon-safe-right),#000 100%);
+  mask-image:linear-gradient(to right,#000 0,#000 var(--icon-safe-left),transparent var(--icon-safe-left),transparent var(--icon-safe-right),#000 var(--icon-safe-right),#000 100%);
+}
+.orb-field span { position:absolute; width:clamp(120px,16vw,220px); height:clamp(120px,16vw,220px); border-radius:50%; filter:blur(34px); opacity:.22; animation:orbDrift var(--orb-dur,16s) ease-in-out infinite alternate; }
+.orb-field span:nth-child(1){left:-4%;top:6%;background:rgba(121,183,255,.36);--orb-dur:15s;}
+.orb-field span:nth-child(2){right:-2%;top:22%;background:rgba(61,211,195,.28);--orb-dur:19s;}
+.orb-field span:nth-child(3){left:34%;bottom:-8%;background:rgba(216,189,132,.25);--orb-dur:17s;}
+.bg-icon { position:absolute; top:-20vh; left:0; width:clamp(20px,2.2vw,34px); height:clamp(20px,2.2vw,34px); opacity:.16; stroke:#d2e6ff; stroke-width:1.7; fill:none; filter:drop-shadow(0 0 10px rgba(131,189,255,.32)); animation:iconFall var(--dur,14s) linear infinite; animation-delay:var(--delay,0s); pointer-events:auto; cursor:pointer; }
+.bg-icon.icon-pop { animation:iconFall var(--dur,14s) linear infinite, iconPop 360ms cubic-bezier(.2,.75,.25,1); }
+.bg-icon:nth-child(1){left:3%;--dur:15s;--delay:-2s;--drift:30px;} .bg-icon:nth-child(2){left:9%;--dur:18s;--delay:-9s;--drift:-40px;} .bg-icon:nth-child(3){left:15%;--dur:13s;--delay:-4s;--drift:26px;} .bg-icon:nth-child(4){left:22%;--dur:17s;--delay:-12s;--drift:-28px;} .bg-icon:nth-child(5){left:29%;--dur:12s;--delay:-6s;--drift:36px;} .bg-icon:nth-child(6){left:36%;--dur:16s;--delay:-11s;--drift:-32px;} .bg-icon:nth-child(7){left:44%;--dur:14s;--delay:-7s;--drift:24px;} .bg-icon:nth-child(8){left:51%;--dur:19s;--delay:-14s;--drift:-38px;} .bg-icon:nth-child(9){left:58%;--dur:12.5s;--delay:-3s;--drift:20px;} .bg-icon:nth-child(10){left:64%;--dur:17.5s;--delay:-13s;--drift:-44px;} .bg-icon:nth-child(11){left:70%;--dur:14.5s;--delay:-8s;--drift:28px;} .bg-icon:nth-child(12){left:76%;--dur:18.5s;--delay:-15s;--drift:-26px;} .bg-icon:nth-child(13){left:82%;--dur:13.5s;--delay:-5s;--drift:40px;} .bg-icon:nth-child(14){left:88%;--dur:16.5s;--delay:-10s;--drift:-35px;} .bg-icon:nth-child(15){left:94%;--dur:15.5s;--delay:-1s;--drift:22px;}
+.bg-scatter-layer {
+  position:fixed; inset:0; pointer-events:none; z-index:2; overflow:hidden;
+  -webkit-mask-image:linear-gradient(to right,#000 0,#000 var(--icon-safe-left),transparent var(--icon-safe-left),transparent var(--icon-safe-right),#000 var(--icon-safe-right),#000 100%);
+  mask-image:linear-gradient(to right,#000 0,#000 var(--icon-safe-left),transparent var(--icon-safe-left),transparent var(--icon-safe-right),#000 var(--icon-safe-right),#000 100%);
+}
+.scatter-piece { position:fixed; width:clamp(14px,1.8vw,24px); height:clamp(14px,1.8vw,24px); stroke:#d2e6ff; stroke-width:1.6; fill:none; opacity:.26; filter:drop-shadow(0 0 10px rgba(131,189,255,.34)); animation:scatterBurst var(--scatter-dur,.72s) cubic-bezier(.2,.75,.24,1) forwards; }
+.login-page { min-height:100vh; display:grid; place-items:center; padding:24px; position:relative; z-index:1; }
+.login-page::before { content:""; position:absolute; inset:0; pointer-events:none; z-index:0; background-image:linear-gradient(rgba(184,204,240,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(184,204,240,.06) 1px,transparent 1px); background-size:46px 46px; mask-image:radial-gradient(circle at center,black 30%,transparent 85%); }
+.auth-shell { width:min(980px,100%); min-height:620px; border-radius:var(--radius-lg); border:1px solid var(--surface-outline); box-shadow:var(--card-shadow); backdrop-filter:blur(20px) saturate(165%); -webkit-backdrop-filter:blur(20px) saturate(165%); background:linear-gradient(160deg,rgba(9,16,42,.8),rgba(8,20,44,.7)); position:relative; overflow:hidden; z-index:1; transform-style:preserve-3d; transition:transform 240ms var(--curve), box-shadow 240ms var(--curve), border-color 240ms var(--curve); }
+.auth-shell::before { content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; opacity:0; box-shadow:inset 0 0 0 1px rgba(255,93,116,.45),0 0 0 1px rgba(255,93,116,.35); }
+.auth-shell::after { content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; background-image:radial-gradient(rgba(255,255,255,.08) .7px,transparent .7px); background-size:3px 3px; opacity:.08; mix-blend-mode:soft-light; }
+.auth-shell:hover{box-shadow:var(--card-shadow-hover);border-color:rgba(218,230,255,.38);}
+body.login-fail .auth-shell { animation:shakeHard 620ms ease, failGlow 2s var(--curve); }
+body.login-fail .auth-shell::before { opacity:1; animation:borderAlert 2s var(--curve); }
+body.login-fail-sticky .auth-shell::before { opacity:1; animation:none; box-shadow:inset 0 0 0 1px rgba(255,93,116,.75),0 0 0 1px rgba(255,93,116,.55),0 0 20px rgba(255,93,116,.28); }
+body.login-success .auth-shell { animation:successGlow 520ms var(--curve); }
+body.login-success .auth-shell::before { opacity:1; animation:none; box-shadow:inset 0 0 0 1px rgba(80,222,130,.78),0 0 0 1px rgba(80,222,130,.58),0 0 22px rgba(80,222,130,.32); }
+.form-container { position:absolute; top:0; width:50%; height:100%; transition:transform .56s var(--curve), opacity .56s var(--curve); backface-visibility:hidden; }
+.sign-in-container { left:0; opacity:1; z-index:2; pointer-events:auto; }
+.sign-up-container { left:0; opacity:0; z-index:1; pointer-events:none; }
+.auth-shell.right-panel-active .sign-in-container { transform:translateX(100%); opacity:0; z-index:1; pointer-events:none; }
+.auth-shell.right-panel-active .sign-up-container { transform:translateX(100%); opacity:1; z-index:5; pointer-events:auto; }
+.form-wrap { height:100%; padding:46px 44px 34px; display:grid; align-content:center; gap:18px; background:rgba(9,16,43,.34); border:1px solid rgba(214,228,255,.12); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);}
+.stagger { opacity:0; transform:translateY(12px); animation:stageIn .64s var(--curve) forwards; animation-delay:var(--stagger,0s); }
+.brand-top{display:inline-flex;align-items:center;gap:10px;margin-bottom:4px;} .brand-icon{width:30px;height:30px;border-radius:10px;display:inline-grid;place-items:center;font-weight:700;font-size:.86rem;background:linear-gradient(140deg,rgba(121,183,255,.48),rgba(61,211,195,.32));box-shadow:inset 0 1px 0 rgba(255,255,255,.22);color:#ecf6ff;}
+.brand-text{font-size:.95rem;font-family:"Audiowide","Plus Jakarta Sans",sans-serif;letter-spacing:.04em;background:linear-gradient(90deg,#dff0ff,#8dd7ff,#b9fff4,#f7dda5);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:brandGlow 5.4s linear infinite;}
+.eyebrow{margin:0;font-size:var(--fs-0);letter-spacing:.1em;text-transform:uppercase;color:#d4e7ff;}
+h1{margin:0;line-height:1.15;font-size:var(--fs-5);letter-spacing:-.03em;font-family:var(--font-display);font-weight:700;}
+.hero-title{font-family:"Audiowide","Plus Jakarta Sans",sans-serif;letter-spacing:.02em;color:#eaf5ff;text-shadow:0 0 12px rgba(131,189,255,.22);animation:heroPulse 2.4s ease-in-out infinite;}
+.wave-title{display:inline-flex;align-items:flex-end;gap:.015em;white-space:nowrap;}
+.wave-char{
+  display:inline-block;
+  transform-origin:center 78%;
+  animation:waveLetter 1.7s var(--curve) infinite;
+  will-change:transform,filter;
+}
+.wave-space{width:.34em;}
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+  .hero-title{background:linear-gradient(95deg,#eaf5ff,#a8d4ff,#d8bd84,#98eddd);background-size:260% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:heroShimmer 4.8s linear infinite, heroPulse 2.4s ease-in-out infinite;}
+  .wave-char{background:inherit;-webkit-background-clip:text;background-clip:text;color:transparent;}
+}
+.subtitle{margin:0;color:var(--text-soft);font-size:var(--fs-2);line-height:1.45;max-width:40ch;}
+.hero-ticker{margin:-8px 0 2px;min-height:1.35em;color:#cde2ff;opacity:.88;font-size:.9rem;transition:opacity .22s var(--curve),transform .22s var(--curve);}
+.form-grid{display:grid;gap:14px;} .input-group{position:relative;} .input-group::after{content:"";position:absolute;left:10px;right:10px;bottom:-2px;height:2px;border-radius:999px;background:linear-gradient(90deg,var(--accent-a),var(--accent-b),var(--accent-luxe));transform:scaleX(0);transform-origin:left;transition:transform .32s var(--curve);} 
+.input-group input{width:100%;border:1px solid var(--line-soft);border-radius:12px;background:var(--panel-glass);color:var(--text-main);padding:18px 14px 10px;outline:none;transition:border-color .26s var(--curve),box-shadow .32s var(--curve),background-color .22s var(--curve);} 
+.input-group input:-webkit-autofill,.input-group input:-webkit-autofill:hover,.input-group input:-webkit-autofill:focus,.input-group input:-webkit-autofill:active{-webkit-text-fill-color:var(--text-main);caret-color:var(--text-main);transition:background-color 9999s ease-in-out 0s;-webkit-box-shadow:0 0 0 1000px var(--panel-dark) inset;box-shadow:0 0 0 1000px var(--panel-dark) inset;border:1px solid var(--line-soft);} 
+.input-group label{position:absolute;left:12px;top:50%;transform:translateY(-50%);padding:0 4px;color:rgba(188,202,232,.74);pointer-events:none;transition:transform .22s var(--curve),color .22s var(--curve),font-size .22s var(--curve),top .22s var(--curve);background:linear-gradient(180deg,rgba(11,21,52,.92),rgba(11,21,52,.92));border-radius:6px;font-size:.95rem;} 
+.input-group input:focus,.input-group input:not(:placeholder-shown){border-color:var(--line-focus);background:var(--panel-dark);box-shadow:0 0 0 3px rgba(95,137,255,.16),0 0 20px rgba(114,165,255,.18);} 
+.input-group input:focus+label,.input-group input:not(:placeholder-shown)+label{top:0;transform:translateY(-50%);font-size:.75rem;color:#dce9ff;} 
+.input-group:focus-within::after{transform:scaleX(1);} 
+.password-assist{display:grid;gap:8px;margin-top:-4px;}
+.password-strength{display:grid;gap:5px;}
+.strength-track{height:7px;border-radius:999px;background:rgba(167,187,227,.2);overflow:hidden;border:1px solid rgba(183,205,255,.2);}
+.strength-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#ff6d7f,#ffcc6b);transition:width .22s var(--curve),filter .22s var(--curve),background .22s var(--curve);}
+.strength-label{font-size:.78rem;color:#c8d9fb;letter-spacing:.01em;}
+.caps-hint{display:none;margin:0;font-size:.78rem;padding:7px 9px;border-radius:9px;border:1px solid rgba(255,175,112,.52);background:rgba(255,151,93,.16);color:#ffe2c5;}
+.layout-hint{display:none;margin:0;font-size:.76rem;color:#bad2ff;opacity:.9;}
+.caps-hint.show,.layout-hint.show{display:block;}
+        .meta-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:-2px;margin-bottom:2px;} .remember{display:inline-flex;align-items:center;gap:8px;font-size:.86rem;color:#d2e3ff;} .remember input{accent-color:var(--accent-a);} 
+        .micro-link{font-size:var(--fs-1);color:#c2d5ff;text-decoration:none;transition:color .2s var(--curve),text-shadow .2s var(--curve);} .micro-link:hover,.micro-link:focus-visible{color:#e8f2ff;text-shadow:0 0 10px rgba(146,196,255,.4);outline:none;}
+        .action-btn{width:100%;border:1px solid rgba(186,205,240,.38);border-radius:var(--radius-sm);padding:12px 18px;color:#f8fbff;font-weight:600;letter-spacing:.03em;text-transform:uppercase;cursor:pointer;background:var(--btn-gradient);box-shadow:0 10px 20px rgba(18,59,132,.36),inset 0 1px 0 rgba(255,255,255,.2);transition:transform .5s var(--curve),box-shadow .5s var(--curve),filter .5s var(--curve);position:relative;overflow:hidden;} 
+        .action-btn:hover{transform:translateY(-1px) scale(1.01);box-shadow:0 14px 24px rgba(18,59,132,.43),0 0 14px rgba(106,158,242,.34);filter:brightness(.94);} 
+        .ghost-btn{justify-self:center;border:1px solid rgba(239,246,255,.58);background:rgba(6,16,42,.18);color:#f4f8ff;padding:10px 18px;border-radius:999px;cursor:pointer;font-weight:600;letter-spacing:.03em;transition:transform .5s var(--curve),background-color .5s var(--curve),box-shadow .5s var(--curve);position:relative;overflow:hidden;} 
+        .ghost-btn:hover{transform:translateY(-1px) scale(1.01);background:rgba(6,16,42,.28);box-shadow:0 8px 18px rgba(1,11,34,.3);} .magnetic-btn{will-change:transform;} .btn-ripple{position:absolute;border-radius:50%;transform:scale(0);background:rgba(255,255,255,.38);animation:ripple .56s ease-out forwards;pointer-events:none;}
+        .error{margin:0;color:#ffe2e7;background:rgba(255,93,116,.16);border:1px solid rgba(255,126,143,.45);border-radius:10px;padding:8px 10px;font-size:.86rem;line-height:1.35;overflow-wrap:anywhere;position:relative;z-index:1;} .form-note{margin:0;color:#ddedff;background:rgba(121,183,255,.13);border:1px solid rgba(121,183,255,.36);border-radius:10px;padding:9px 10px;font-size:.84rem;line-height:1.35;overflow-wrap:anywhere;position:relative;z-index:1;}
+        .form-wrap .action-btn + .error,.form-wrap .action-btn + .form-note{margin-top:10px;}
+        .overlay-container{position:absolute;top:0;left:50%;width:50%;height:100%;overflow:hidden;transition:transform .56s var(--curve);z-index:100;} .auth-shell.right-panel-active .overlay-container{transform:translateX(-100%);} 
+        .overlay{background:linear-gradient(140deg,rgba(37,92,189,.93),rgba(23,140,150,.9) 62%,rgba(216,189,132,.7));position:relative;left:-100%;width:200%;height:100%;transform:translateX(0);transition:transform .56s var(--curve);} .auth-shell.right-panel-active .overlay{transform:translateX(50%);} 
+        .overlay-panel{position:absolute;top:0;width:50%;height:100%;display:grid;place-content:center;gap:14px;padding:34px;text-align:center;transition:transform .56s var(--curve),opacity .56s var(--curve);} .overlay-left{transform:translateX(-20%);opacity:0;} .overlay-right{right:0;transform:translateX(0);opacity:1;} .auth-shell.right-panel-active .overlay-left{transform:translateX(0);opacity:1;} .auth-shell.right-panel-active .overlay-right{transform:translateX(20%);opacity:0;} .overlay-title{margin:0;font-family:var(--font-display);font-size:clamp(1.5rem,2.4vw,2rem);} .overlay-text{margin:0 auto;max-width:34ch;color:rgba(236,242,255,.92);line-height:1.5;}
+        @keyframes heroShimmer{to{background-position:-260% 0;}} @keyframes heroPulse{0%,100%{transform:translateY(0);}50%{transform:translateY(-1px);filter:drop-shadow(0 0 10px rgba(130,190,255,.3));}} @keyframes brandGlow{to{background-position:-220% 0;}} 
+        @keyframes waveLetter{0%,100%{transform:translateY(0) scale(1);}35%{transform:translateY(-2px) scale(1.2);}70%{transform:translateY(0) scale(1);}}
+        @keyframes iconFall{0%{opacity:0;transform:translate3d(0,-18vh,0) rotate(0deg);}12%{opacity:.16;}50%{opacity:.2;transform:translate3d(var(--drift,0),44vh,0) rotate(150deg);}88%{opacity:.14;}100%{opacity:0;transform:translate3d(calc(var(--drift,0) * -1),120vh,0) rotate(310deg);}} @keyframes iconPop{0%{transform:scale(1);filter:drop-shadow(0 0 8px rgba(131,189,255,.28));}45%{transform:scale(1.9);opacity:.35;filter:drop-shadow(0 0 16px rgba(131,189,255,.55));}100%{transform:scale(1);filter:drop-shadow(0 0 10px rgba(131,189,255,.32));}} @keyframes orbDrift{from{transform:translate3d(-8px,-8px,0) scale(1);}to{transform:translate3d(10px,12px,0) scale(1.08);}} @keyframes stageIn{to{opacity:1;transform:translateY(0);}} @keyframes neonTrailFade{0%{opacity:.7;transform:translate(-50%,-50%) scale(.8);}18%{opacity:.9;}100%{opacity:0;transform:translate(-50%,-50%) scale(1.95);}} @keyframes scatterBurst{0%{transform:translate(-50%,-50%) rotate(0deg) scale(.9);opacity:.28;}78%{opacity:.22;}100%{transform:translate(calc(-50% + var(--sx,0px)),calc(-50% + var(--sy,0px))) rotate(var(--srot,140deg)) scale(.66);opacity:0;}} 
+        @keyframes shakeHard{0%,100%{transform:translateX(0);}8%{transform:translateX(-16px);}16%{transform:translateX(15px);}24%{transform:translateX(-13px);}34%{transform:translateX(11px);}46%{transform:translateX(-9px);}58%{transform:translateX(7px);}72%{transform:translateX(-5px);}86%{transform:translateX(3px);}} @keyframes failGlow{0%{box-shadow:0 0 0 rgba(255,93,116,0),var(--card-shadow);}24%{box-shadow:0 0 34px rgba(255,93,116,.62),0 0 64px rgba(255,93,116,.3),var(--card-shadow);}62%{box-shadow:0 0 24px rgba(255,93,116,.38),0 0 44px rgba(255,93,116,.22),var(--card-shadow);}100%{box-shadow:var(--card-shadow);}} @keyframes successGlow{0%{box-shadow:0 0 0 rgba(80,222,130,0),var(--card-shadow);}35%{box-shadow:0 0 28px rgba(80,222,130,.62),0 0 54px rgba(80,222,130,.24),var(--card-shadow);}100%{box-shadow:var(--card-shadow);}} @keyframes borderAlert{0%{opacity:0;}16%{opacity:1;}42%{opacity:1;filter:blur(.8px);}70%{opacity:.7;}100%{opacity:0;}} @keyframes ripple{to{transform:scale(4);opacity:0;}}
+        @media (max-width:900px){.login-page{padding:16px;}.auth-shell{min-height:760px;}.form-container,.overlay-container{width:100%;left:0;}.overlay-container{top:auto;bottom:0;height:250px;}.form-wrap{padding:24px 18px 14px;}.hero-title{font-size:clamp(1.56rem,8vw,2rem);}.action-btn,.ghost-btn{min-height:44px;}.sign-up-container{transform:translateY(100%);}.auth-shell.right-panel-active .sign-in-container{transform:translateY(-100%);}.auth-shell.right-panel-active .sign-up-container{transform:translateY(0);}.overlay{left:0;width:100%;transform:translateY(0);}.auth-shell.right-panel-active .overlay{transform:translateY(-8%);}.overlay-panel{width:100%;padding:20px;}.overlay-left,.overlay-right{right:auto;}}
+        @media (prefers-reduced-motion:reduce){
+          *,*::before,*::after{animation:none !important;transition:none !important;}
+          .stagger{opacity:1 !important;transform:none !important;}
+          .wave-char{animation:none !important;transform:none !important;}
+        }
+    </style>
+</head>
+<body th:classappend="${error} or ${signupError} ? ' login-fail login-fail-sticky' : (${signupSuccess} ? ' login-success' : '')">
+<div class="spotlight-layer" aria-hidden="true"></div>
+<div class="cursor-neon-layer" id="cursorNeonLayer" aria-hidden="true"></div>
+<div class="orb-field" aria-hidden="true"><span></span><span></span><span></span></div>
+<div class="bg-icons" aria-hidden="true">
+<svg class="bg-icon" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><line x1="8" y1="3" x2="8" y2="8"/><line x1="16" y1="3" x2="16" y2="8"/><line x1="4" y1="10" x2="20" y2="10"/></svg>
+<svg class="bg-icon" viewBox="0 0 24 24"><path d="M4 5h10a2 2 0 0 1 2 2v12H6a2 2 0 0 1-2-2z"/><path d="M16 7h2a2 2 0 0 1 2 2v10h-4z"/></svg>
+<svg class="bg-icon" viewBox="0 0 24 24"><path d="M3 20h18"/><path d="M5 20V9l7-5 7 5v11"/><path d="M10 20v-6h4v6"/></svg>
+<svg class="bg-icon" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="16" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg>
+<svg class="bg-icon" viewBox="0 0 24 24"><path d="M4 18V6l8-3 8 3v12l-8 3z"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+<svg class="bg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg>
+<svg class="bg-icon" viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M6 6v12h12V6"/><path d="M9 10h6"/><path d="M9 14h6"/></svg>
+<svg class="bg-icon" viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M7 19V7h10v12"/><path d="M10 10h4"/><path d="M10 13h4"/></svg>
+<svg class="bg-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="8" height="16" rx="1.5"/><rect x="13" y="4" width="8" height="16" rx="1.5"/></svg>
+<svg class="bg-icon" viewBox="0 0 24 24"><path d="M12 3l8 4v10l-8 4-8-4V7z"/><path d="M12 3v18"/></svg>
+<svg class="bg-icon" viewBox="0 0 24 24"><path d="M5 20h14"/><path d="M7 20V8l5-3 5 3v12"/><circle cx="12" cy="13" r="2"/></svg>
+<svg class="bg-icon" viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M6 19V5h12v14"/><line x1="8.5" y1="8" x2="15.5" y2="8"/><line x1="8.5" y1="12" x2="15.5" y2="12"/></svg>
+<svg class="bg-icon" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 10h16"/><path d="M9 3v4"/><path d="M15 3v4"/></svg>
+<svg class="bg-icon" viewBox="0 0 24 24"><path d="M5 5h14v14H5z"/><path d="M9 5v14"/><path d="M5 10h14"/></svg>
+<svg class="bg-icon" viewBox="0 0 24 24"><path d="M7 4h10a2 2 0 0 1 2 2v12H5V6a2 2 0 0 1 2-2z"/><path d="M8 9h8"/><path d="M8 13h8"/></svg>
+</div>
+<div class="bg-scatter-layer" id="bgScatterLayer" aria-hidden="true"></div>
+<main class="login-page" aria-labelledby="authTitle">
+<section class="auth-shell" id="authShell" th:attr="data-mode=${mode}" th:classappend="${mode} == 'signup' ? ' right-panel-active' : ''">
+  <div class="form-container sign-up-container">
+    <form method="post" action="/login/signup" class="form-wrap" id="signUpForm" novalidate>
+      <div class="brand-top stagger" style="--stagger:.04s;"><span class="brand-icon" aria-hidden="true">AI</span><span class="brand-text">ChronoCampus Nexus</span></div>
+      <p class="eyebrow stagger" style="--stagger:.10s;">New Account</p>
+      <h1 class="hero-title wave-title" aria-label="Create Access">
+        <span class="wave-char" style="animation-delay:0ms;" aria-hidden="true">C</span>
+        <span class="wave-char" style="animation-delay:110ms;" aria-hidden="true">r</span>
+        <span class="wave-char" style="animation-delay:220ms;" aria-hidden="true">e</span>
+        <span class="wave-char" style="animation-delay:330ms;" aria-hidden="true">a</span>
+        <span class="wave-char" style="animation-delay:440ms;" aria-hidden="true">t</span>
+        <span class="wave-char" style="animation-delay:550ms;" aria-hidden="true">e</span>
+        <span class="wave-space" aria-hidden="true"></span>
+        <span class="wave-char" style="animation-delay:660ms;" aria-hidden="true">A</span>
+        <span class="wave-char" style="animation-delay:770ms;" aria-hidden="true">c</span>
+        <span class="wave-char" style="animation-delay:880ms;" aria-hidden="true">c</span>
+        <span class="wave-char" style="animation-delay:990ms;" aria-hidden="true">e</span>
+        <span class="wave-char" style="animation-delay:1100ms;" aria-hidden="true">s</span>
+        <span class="wave-char" style="animation-delay:1210ms;" aria-hidden="true">s</span>
+      </h1>
+      <p class="subtitle stagger" style="--stagger:.22s;">Request a new ERP account. Admin approval can be required based on your role.</p>
+      <div class="form-grid">
+        <div class="input-group stagger" style="--stagger:.30s;"><input id="signupName" type="text" name="name" autocomplete="name" placeholder=" " required><label for="signupName">Name</label></div>
+        <div class="input-group stagger" style="--stagger:.36s;"><input id="signupEmail" type="email" name="email" autocomplete="email" placeholder=" " required><label for="signupEmail">Email</label></div>
+        <div class="input-group stagger" style="--stagger:.42s;"><input id="signupPassword" type="password" name="password" autocomplete="new-password" placeholder=" " required minlength="6"><label for="signupPassword">Password</label></div>
+      </div>
+      <div class="password-assist stagger" style="--stagger:.46s;">
+        <div class="password-strength" id="signupStrength" aria-live="polite">
+          <div class="strength-track"><div class="strength-fill" id="signupStrengthFill"></div></div>
+          <p class="strength-label" id="signupStrengthLabel">Strength: enter password</p>
+        </div>
+        <p class="caps-hint" id="signupCapsHint" role="status">Caps Lock is ON.</p>
+        <p class="layout-hint" id="signupLayoutHint" role="status">Keyboard hint: avoid non-English characters in password if not intended.</p>
+      </div>
+      <button type="submit" class="action-btn stagger magnetic-btn" style="--stagger:.5s;">Create Account</button>
+      <p class="error" th:if="${signupError}" th:text="${signupError}" role="alert"></p>
+      <p class="form-note" th:if="${signupSuccess}" th:text="${signupSuccess}" role="status"></p>
+    </form>
+  </div>
+  <div class="form-container sign-in-container">
+    <form method="post" action="/login" class="form-wrap" id="signInForm" novalidate th:if="${mode == 'signin' or mode == null}">
+      <div class="brand-top stagger" style="--stagger:.04s;"><span class="brand-icon" aria-hidden="true">AI</span><span class="brand-text">ChronoCampus Nexus</span></div>
+      <p class="eyebrow stagger" style="--stagger:.10s;">Enterprise Access</p>
+      <h1 id="authTitle" class="hero-title wave-title" aria-label="Welcome Back">
+        <span class="wave-char" style="animation-delay:0ms;" aria-hidden="true">W</span>
+        <span class="wave-char" style="animation-delay:110ms;" aria-hidden="true">e</span>
+        <span class="wave-char" style="animation-delay:220ms;" aria-hidden="true">l</span>
+        <span class="wave-char" style="animation-delay:330ms;" aria-hidden="true">c</span>
+        <span class="wave-char" style="animation-delay:440ms;" aria-hidden="true">o</span>
+        <span class="wave-char" style="animation-delay:550ms;" aria-hidden="true">m</span>
+        <span class="wave-char" style="animation-delay:660ms;" aria-hidden="true">e</span>
+        <span class="wave-space" aria-hidden="true"></span>
+        <span class="wave-char" style="animation-delay:770ms;" aria-hidden="true">B</span>
+        <span class="wave-char" style="animation-delay:880ms;" aria-hidden="true">a</span>
+        <span class="wave-char" style="animation-delay:990ms;" aria-hidden="true">c</span>
+        <span class="wave-char" style="animation-delay:1100ms;" aria-hidden="true">k</span>
+      </h1>
+      <p class="subtitle stagger" style="--stagger:.22s;">Sign in to continue managing schedules, departments, and optimization decisions.</p>
+      <p id="heroTicker" class="hero-ticker stagger" style="--stagger:.28s;" aria-live="polite"></p>
+      <div class="form-grid">
+        <div class="input-group stagger" style="--stagger:.34s;"><input id="username" type="text" name="username" autocomplete="username" placeholder=" " required><label for="username">Username</label></div>
+        <div class="input-group stagger" style="--stagger:.40s;"><input id="password" type="password" name="password" autocomplete="current-password" placeholder=" " required><label for="password">Password</label></div>
+      </div>
+      <div class="password-assist stagger" style="--stagger:.43s;">
+        <p class="caps-hint" id="signinCapsHint" role="status">Caps Lock is ON.</p>
+        <p class="layout-hint" id="signinLayoutHint" role="status">Keyboard hint: avoid non-English characters in password if not intended.</p>
+      </div>
+      <div class="meta-row stagger" style="--stagger:.46s;"><label class="remember" for="rememberMe"><input id="rememberMe" type="checkbox" name="rememberMe">Remember me</label><a class="micro-link" href="/login?mode=forgot" aria-label="Reset your password">Forgot password?</a></div>
+      <button type="submit" class="action-btn stagger magnetic-btn" style="--stagger:.52s;">Secure Sign In</button>
+      <p class="error" th:if="${error}" th:text="${error}" role="alert"></p>
+      <p class="form-note" th:if="${message}" th:text="${message}" role="status"></p>
+    </form>
+    <form method="post" action="/login/forgot" class="form-wrap" id="forgotForm" novalidate th:if="${mode == 'forgot'}">
+      <div class="brand-top stagger" style="--stagger:.04s;"><span class="brand-icon" aria-hidden="true">AI</span><span class="brand-text">ChronoCampus Nexus</span></div>
+      <p class="eyebrow stagger" style="--stagger:.10s;">Password Reset</p>
+      <h1 class="hero-title wave-title" aria-label="Reset Password">Reset Access</h1>
+      <p class="subtitle stagger" style="--stagger:.22s;">Enter your username to generate a reset token.</p>
+      <div class="form-grid">
+        <div class="input-group stagger" style="--stagger:.34s;"><input id="forgotUsername" type="text" name="username" autocomplete="username" placeholder=" " required><label for="forgotUsername">Username</label></div>
+      </div>
+      <button type="submit" class="action-btn stagger magnetic-btn" style="--stagger:.52s;">Generate Token</button>
+      <p class="form-note" th:if="${message}" th:text="${message}" role="status"></p>
+      <p class="form-note"><a class="micro-link" href="/login?mode=signin">Back to sign in</a></p>
+    </form>
+    <form method="post" action="/login/reset" class="form-wrap" id="resetForm" novalidate th:if="${mode == 'reset'}">
+      <div class="brand-top stagger" style="--stagger:.04s;"><span class="brand-icon" aria-hidden="true">AI</span><span class="brand-text">ChronoCampus Nexus</span></div>
+      <p class="eyebrow stagger" style="--stagger:.10s;">Password Reset</p>
+      <h1 class="hero-title wave-title" aria-label="Set New Password">Set New Password</h1>
+      <p class="subtitle stagger" style="--stagger:.22s;">Paste your reset token and choose a new password.</p>
+      <div class="form-grid">
+        <div class="input-group stagger" style="--stagger:.34s;"><input id="resetToken" type="text" name="token" placeholder=" " th:value="${resetToken}" required><label for="resetToken">Reset Token</label></div>
+        <div class="input-group stagger" style="--stagger:.40s;"><input id="resetNewPassword" type="password" name="newPassword" placeholder=" " required minlength="6"><label for="resetNewPassword">New Password</label></div>
+      </div>
+      <button type="submit" class="action-btn stagger magnetic-btn" style="--stagger:.52s;">Reset Password</button>
+      <p class="form-note" th:if="${message}" th:text="${message}" role="status"></p>
+      <p class="form-note"><a class="micro-link" href="/login?mode=signin">Back to sign in</a></p>
+    </form>
+  </div>
+  <div class="overlay-container"><div class="overlay"><div class="overlay-panel overlay-left"><h2 class="overlay-title">Already Registered?</h2><p class="overlay-text">Use your existing credentials and continue where you left off in the control dashboard.</p><button type="button" class="ghost-btn magnetic-btn" id="showSignIn">Sign In</button></div><div class="overlay-panel overlay-right"><h2 class="overlay-title">Need an Account?</h2><p class="overlay-text">Create your profile and get your institution onboarding flow started in a few steps.</p><button type="button" class="ghost-btn magnetic-btn" id="showSignUp">Sign Up</button></div></div></div>
+</section>
+</main>
+<script>
+(function () {
+  const body = document.body;
+  const shell = document.getElementById("authShell");
+  const showSignUp = document.getElementById("showSignUp");
+  const showSignIn = document.getElementById("showSignIn");
+  const ticker = document.getElementById("heroTicker");
+  const signInForm = document.getElementById("signInForm");
+  const signUpForm = document.getElementById("signUpForm");
+  const signupPasswordInput = document.getElementById("signupPassword");
+  const signinPasswordInput = document.getElementById("password");
+  const signupStrengthFill = document.getElementById("signupStrengthFill");
+  const signupStrengthLabel = document.getElementById("signupStrengthLabel");
+  const signupCapsHint = document.getElementById("signupCapsHint");
+  const signinCapsHint = document.getElementById("signinCapsHint");
+  const signupLayoutHint = document.getElementById("signupLayoutHint");
+  const signinLayoutHint = document.getElementById("signinLayoutHint");
+  const bgIconsLayer = document.querySelector(".bg-icons");
+  const scatterLayer = document.getElementById("bgScatterLayer");
+  const cursorNeonLayer = document.getElementById("cursorNeonLayer");
+  let neonCanvas = null;
+  let neonCtx = null;
+  let neonPoints = [];
+  const neonTrailTtl = 520;
+  const neonMaxPoints = 160;
+  const neonFollow = 0.5;
+  const neonMinSample = 1.8;
+  const neonLagMs = 78;
+  const neonCircleRadius = 5.5;
+  const neonCursor = {
+    x: window.innerWidth * 0.5,
+    y: window.innerHeight * 0.5,
+    targetX: window.innerWidth * 0.5,
+    targetY: window.innerHeight * 0.5,
+    ready: false
+  };
+  if (!shell || !showSignUp || !showSignIn) { return; }
+
+  function setupNeonCanvas() {
+    if (!cursorNeonLayer) { return; }
+    neonCanvas = document.createElement("canvas");
+    neonCanvas.className = "cursor-neon-canvas";
+    cursorNeonLayer.appendChild(neonCanvas);
+    neonCtx = neonCanvas.getContext("2d");
+    resizeNeonCanvas();
+  }
+
+  function resizeNeonCanvas() {
+    if (!neonCanvas || !neonCtx) { return; }
+    const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    neonCanvas.width = Math.floor(window.innerWidth * dpr);
+    neonCanvas.height = Math.floor(window.innerHeight * dpr);
+    neonCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function addTrailPoint(x, y, time) {
+    const prev = neonPoints.length > 0 ? neonPoints[neonPoints.length - 1] : null;
+    if (!prev) {
+      neonPoints.push({ x: x, y: y, t: time });
+      return;
+    }
+    const dx = x - prev.x;
+    const dy = y - prev.y;
+    const dist = Math.hypot(dx, dy);
+    const steps = Math.max(1, Math.min(12, Math.ceil(dist / 10)));
+    const dt = Math.max(0.01, time - prev.t);
+    for (let i = 1; i <= steps; i += 1) {
+      const k = i / steps;
+      neonPoints.push({
+        x: prev.x + (dx * k),
+        y: prev.y + (dy * k),
+        t: prev.t + (dt * k)
+      });
+    }
+    if (neonPoints.length > neonMaxPoints) {
+      neonPoints.splice(0, neonPoints.length - neonMaxPoints);
+    }
+  }
+
+  function getLaggedPoint(points, lagTime) {
+    if (!points.length) { return null; }
+    if (points.length === 1 || lagTime <= points[0].t) {
+      return { x: points[0].x, y: points[0].y, t: points[0].t };
+    }
+    for (let i = 1; i < points.length; i += 1) {
+      const curr = points[i];
+      if (curr.t >= lagTime) {
+        const prev = points[i - 1];
+        const dt = Math.max(0.001, curr.t - prev.t);
+        const k = Math.max(0, Math.min(1, (lagTime - prev.t) / dt));
+        return {
+          x: prev.x + ((curr.x - prev.x) * k),
+          y: prev.y + ((curr.y - prev.y) * k),
+          t: prev.t + ((curr.t - prev.t) * k)
+        };
+      }
+    }
+    const last = points[points.length - 1];
+    return { x: last.x, y: last.y, t: last.t };
+  }
+
+  function renderNeonTrail() {
+    if (!neonCtx || !neonCanvas) {
+      requestAnimationFrame(renderNeonTrail);
+      return;
+    }
+    const now = performance.now();
+    if (neonCursor.ready) {
+      const dist = Math.hypot(neonCursor.targetX - neonCursor.x, neonCursor.targetY - neonCursor.y);
+      const dynamicFollow = dist > 90 ? 0.72 : (dist > 36 ? 0.58 : neonFollow);
+      neonCursor.x += (neonCursor.targetX - neonCursor.x) * dynamicFollow;
+      neonCursor.y += (neonCursor.targetY - neonCursor.y) * dynamicFollow;
+      const tail = neonPoints.length > 0 ? neonPoints[neonPoints.length - 1] : null;
+      const dx = tail ? neonCursor.x - tail.x : neonMinSample;
+      const dy = tail ? neonCursor.y - tail.y : 0;
+      if ((dx * dx) + (dy * dy) >= neonMinSample * neonMinSample) {
+        addTrailPoint(neonCursor.x, neonCursor.y, now);
+      }
+    }
+    neonPoints = neonPoints.filter(function (p) { return now - p.t < neonTrailTtl; });
+    neonCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    const circlePoint = getLaggedPoint(neonPoints, now - neonLagMs);
+    if (circlePoint) {
+      const age = Math.max(0, now - circlePoint.t);
+      const life = 1 - (age / neonTrailTtl);
+      const alpha = Math.max(0, Math.min(1, life));
+      const radius = neonCircleRadius + (alpha * 1.3);
+
+      neonCtx.beginPath();
+      neonCtx.arc(circlePoint.x, circlePoint.y, radius + 2.8, 0, Math.PI * 2);
+      neonCtx.fillStyle = "rgba(92,236,255," + (alpha * 0.18).toFixed(3) + ")";
+      neonCtx.shadowBlur = 18;
+      neonCtx.shadowColor = "rgba(110,214,255," + (alpha * 0.55).toFixed(3) + ")";
+      neonCtx.fill();
+
+      neonCtx.beginPath();
+      neonCtx.arc(circlePoint.x, circlePoint.y, radius, 0, Math.PI * 2);
+      neonCtx.strokeStyle = "rgba(178,248,255," + (alpha * 0.9).toFixed(3) + ")";
+      neonCtx.lineWidth = 1.9;
+      neonCtx.shadowBlur = 0;
+      neonCtx.stroke();
+
+      neonCtx.beginPath();
+      neonCtx.arc(circlePoint.x, circlePoint.y, Math.max(1.4, radius * 0.34), 0, Math.PI * 2);
+      neonCtx.fillStyle = "rgba(214,253,255," + (alpha * 0.92).toFixed(3) + ")";
+      neonCtx.fill();
+    }
+    requestAnimationFrame(renderNeonTrail);
+  }
+
+  setupNeonCanvas();
+  renderNeonTrail();
+
+  function setCapsHint(node, isOn) {
+    if (!node) { return; }
+    node.classList.toggle("show", !!isOn);
+  }
+
+  function setLayoutHint(node, value) {
+    if (!node) { return; }
+    const hasNonAscii = /[^\x00-\x7F]/.test(value || "");
+    node.classList.toggle("show", hasNonAscii);
+  }
+
+  function scorePasswordStrength(password) {
+    if (!password) { return { pct: 0, label: "Strength: enter password", color: "linear-gradient(90deg,#ff6d7f,#ffcc6b)" }; }
+    let score = 0;
+    if (password.length >= 8) { score += 25; }
+    if (password.length >= 12) { score += 10; }
+    if (/[A-Z]/.test(password) && /[a-z]/.test(password)) { score += 20; }
+    if (/\d/.test(password)) { score += 20; }
+    if (/[^A-Za-z0-9]/.test(password)) { score += 20; }
+    if (password.length >= 16) { score += 5; }
+    const pct = Math.max(6, Math.min(100, score));
+    if (score < 35) { return { pct: pct, label: "Strength: weak", color: "linear-gradient(90deg,#ff6d7f,#ffb172)" }; }
+    if (score < 65) { return { pct: pct, label: "Strength: medium", color: "linear-gradient(90deg,#ffb45e,#ffe178)" }; }
+    if (score < 85) { return { pct: pct, label: "Strength: strong", color: "linear-gradient(90deg,#73e4b6,#8ae9ff)" }; }
+    return { pct: pct, label: "Strength: very strong", color: "linear-gradient(90deg,#5af2be,#7df7ff)" };
+  }
+
+  function refreshSignupStrength(password) {
+    if (!signupStrengthFill || !signupStrengthLabel) { return; }
+    const state = scorePasswordStrength(password);
+    signupStrengthFill.style.width = state.pct + "%";
+    signupStrengthFill.style.background = state.color;
+    signupStrengthFill.style.filter = "drop-shadow(0 0 8px rgba(131,214,255,.38))";
+    signupStrengthLabel.textContent = state.label;
+  }
+
+  function bindPasswordHints(input, capsNode, layoutNode, withStrength) {
+    if (!input) { return; }
+    input.addEventListener("keydown", function (event) {
+      setCapsHint(capsNode, event.getModifierState && event.getModifierState("CapsLock"));
+    });
+    input.addEventListener("keyup", function (event) {
+      setCapsHint(capsNode, event.getModifierState && event.getModifierState("CapsLock"));
+      setLayoutHint(layoutNode, input.value);
+      if (withStrength) { refreshSignupStrength(input.value); }
+    });
+    input.addEventListener("focus", function (event) {
+      setCapsHint(capsNode, event.getModifierState && event.getModifierState("CapsLock"));
+      setLayoutHint(layoutNode, input.value);
+      if (withStrength) { refreshSignupStrength(input.value); }
+    });
+    input.addEventListener("blur", function () {
+      setCapsHint(capsNode, false);
+    });
+    input.addEventListener("input", function () {
+      setLayoutHint(layoutNode, input.value);
+      if (withStrength) { refreshSignupStrength(input.value); }
+    });
+  }
+
+  bindPasswordHints(signupPasswordInput, signupCapsHint, signupLayoutHint, true);
+  bindPasswordHints(signinPasswordInput, signinCapsHint, signinLayoutHint, false);
+  refreshSignupStrength(signupPasswordInput ? signupPasswordInput.value : "");
+
+  function isSigninValid() {
+    if (!signInForm) { return true; }
+    const username = signInForm.querySelector("input[name='username']");
+    const password = signInForm.querySelector("input[name='password']");
+    return !!(username && password && username.value.trim().length > 0 && password.value.trim().length > 0);
+  }
+
+  function isSignupValid() {
+    if (!signUpForm) { return true; }
+    const name = signUpForm.querySelector("input[name='name']");
+    const email = signUpForm.querySelector("input[name='email']");
+    const password = signUpForm.querySelector("input[name='password']");
+    const emailOk = !!(email && /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/.test(email.value.trim()));
+    return !!(
+      name && password &&
+      name.value.trim().length >= 2 &&
+      password.value.length >= 6 &&
+      emailOk
+    );
+  }
+
+  function refreshErrorState() {
+    if (!body.classList.contains("login-fail-sticky")) { return; }
+    body.classList.remove("login-fail", "login-fail-sticky");
+  }
+
+  function attachStickyErrorRelease(form) {
+    if (!form) { return; }
+    form.querySelectorAll("input").forEach(function (input) {
+      input.addEventListener("input", refreshErrorState);
+      input.addEventListener("blur", refreshErrorState);
+    });
+  }
+  attachStickyErrorRelease(signInForm);
+  attachStickyErrorRelease(signUpForm);
+
+  function submitWithValidationFeedback(form, validator) {
+    if (!form) { return; }
+    form.addEventListener("submit", function (event) {
+      if (validator()) {
+        body.classList.remove("login-fail", "login-fail-sticky");
+        return;
+      }
+      event.preventDefault();
+      body.classList.remove("login-success");
+      body.classList.remove("login-fail");
+      void body.offsetWidth;
+      body.classList.add("login-fail", "login-fail-sticky");
+    });
+  }
+  submitWithValidationFeedback(signInForm, isSigninValid);
+  submitWithValidationFeedback(signUpForm, isSignupValid);
+
+  function updateIconSafeZone() {
+    if (!shell) { return; }
+    const rect = shell.getBoundingClientRect();
+    const margin = 24;
+    const left = Math.max(0, ((rect.left - margin) / window.innerWidth) * 100);
+    const right = Math.min(100, ((rect.right + margin) / window.innerWidth) * 100);
+    document.documentElement.style.setProperty("--icon-safe-left", left.toFixed(2) + "%");
+    document.documentElement.style.setProperty("--icon-safe-right", right.toFixed(2) + "%");
+  }
+
+  const iconShapes = [
+    "<rect x='4' y='5' width='16' height='15' rx='2'/><line x1='8' y1='3' x2='8' y2='8'/><line x1='16' y1='3' x2='16' y2='8'/><line x1='4' y1='10' x2='20' y2='10'/>",
+    "<path d='M4 5h10a2 2 0 0 1 2 2v12H6a2 2 0 0 1-2-2z'/><path d='M16 7h2a2 2 0 0 1 2 2v10h-4z'/>",
+    "<path d='M3 20h18'/><path d='M5 20V9l7-5 7 5v11'/><path d='M10 20v-6h4v6'/>",
+    "<circle cx='12' cy='12' r='8'/><path d='M12 8v5l3 2'/>",
+    "<path d='M12 3l8 4v10l-8 4-8-4V7z'/><path d='M12 3v18'/>"
+  ];
+
+  function randomIconLanePercent() {
+    const leftSafe = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--icon-safe-left")) || 24;
+    const rightSafe = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--icon-safe-right")) || 76;
+    const laneChoice = Math.random() < 0.5 ? "left" : "right";
+    if (laneChoice === "left") {
+      return (2 + Math.random() * Math.max(8, leftSafe - 4));
+    }
+    return (Math.min(96, rightSafe + 2) + Math.random() * Math.max(2, 96 - (rightSafe + 2)));
+  }
+
+  function spawnExtraIcons(count) {
+    if (!bgIconsLayer) { return; }
+    for (let i = 0; i < count; i += 1) {
+      const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      icon.setAttribute("class", "bg-icon");
+      icon.setAttribute("viewBox", "0 0 24 24");
+      icon.setAttribute("aria-hidden", "true");
+      icon.style.left = randomIconLanePercent().toFixed(2) + "%";
+      icon.style.setProperty("--dur", (12.5 + Math.random() * 7).toFixed(2) + "s");
+      icon.style.setProperty("--delay", (-Math.random() * 18).toFixed(2) + "s");
+      icon.style.setProperty("--drift", ((Math.random() * 90) - 45).toFixed(2) + "px");
+      icon.innerHTML = iconShapes[Math.floor(Math.random() * iconShapes.length)];
+      bgIconsLayer.appendChild(icon);
+    }
+  }
+
+  function scatterIconsFromClick(event) {
+    if (!scatterLayer) { return; }
+    const clickX = event.clientX;
+    const clickY = event.clientY;
+    const pieces = 14;
+    for (let i = 0; i < pieces; i += 1) {
+      const piece = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      piece.setAttribute("class", "scatter-piece");
+      piece.setAttribute("viewBox", "0 0 24 24");
+      piece.setAttribute("aria-hidden", "true");
+      piece.style.left = clickX + "px";
+      piece.style.top = clickY + "px";
+      const angle = (Math.PI * 2 * i) / pieces + (Math.random() * 0.6 - 0.3);
+      const radius = 32 + Math.random() * 96;
+      piece.style.setProperty("--sx", (Math.cos(angle) * radius).toFixed(2) + "px");
+      piece.style.setProperty("--sy", (Math.sin(angle) * radius).toFixed(2) + "px");
+      piece.style.setProperty("--srot", ((Math.random() * 360) - 180).toFixed(1) + "deg");
+      piece.style.setProperty("--scatter-dur", (520 + Math.random() * 340).toFixed(0) + "ms");
+      piece.innerHTML = iconShapes[Math.floor(Math.random() * iconShapes.length)];
+      scatterLayer.appendChild(piece);
+      piece.addEventListener("animationend", function () { piece.remove(); });
+    }
+  }
+
+  if (bgIconsLayer) {
+    updateIconSafeZone();
+    spawnExtraIcons(6);
+    const popHandler = function (event) {
+      const icon = event.target.closest(".bg-icon");
+      if (!icon) { return; }
+      icon.classList.remove("icon-pop");
+      void icon.getBoundingClientRect();
+      icon.classList.add("icon-pop");
+      setTimeout(function () { icon.classList.remove("icon-pop"); }, 380);
+      scatterIconsFromClick(event);
+    };
+    bgIconsLayer.addEventListener("click", popHandler);
+    document.addEventListener("click", popHandler);
+  }
+  window.addEventListener("resize", updateIconSafeZone);
+  window.addEventListener("resize", resizeNeonCanvas);
+
+  const mode = (shell.dataset.mode || "signin").toLowerCase();
+  if (mode === "signup") { shell.classList.add("right-panel-active"); } else { shell.classList.remove("right-panel-active"); }
+  showSignUp.addEventListener("click", function (event) { event.preventDefault(); shell.classList.add("right-panel-active"); });
+  showSignIn.addEventListener("click", function (event) { event.preventDefault(); shell.classList.remove("right-panel-active"); });
+  document.addEventListener("pointermove", function (event) {
+    const x = (event.clientX / window.innerWidth) * 100;
+    const y = (event.clientY / window.innerHeight) * 100;
+    document.documentElement.style.setProperty("--spot-x", x + "%");
+    document.documentElement.style.setProperty("--spot-y", y + "%");
+    const rect = shell.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const rx = (event.clientY - cy) / rect.height;
+    const ry = (event.clientX - cx) / rect.width;
+    const tiltX = Math.max(-4, Math.min(4, -rx * 7));
+    const tiltY = Math.max(-5, Math.min(5, ry * 8));
+    shell.style.transform = "perspective(1200px) rotateX(" + tiltX.toFixed(2) + "deg) rotateY(" + tiltY.toFixed(2) + "deg)";
+
+    neonCursor.targetX = event.clientX;
+    neonCursor.targetY = event.clientY;
+    if (!neonCursor.ready) {
+      neonCursor.x = event.clientX;
+      neonCursor.y = event.clientY;
+      neonCursor.ready = true;
+      addTrailPoint(event.clientX, event.clientY, performance.now());
+    }
+  });
+  shell.addEventListener("pointerleave", function () { shell.style.transform = ""; });
+  document.querySelectorAll(".magnetic-btn").forEach(function (button) {
+    button.addEventListener("pointermove", function (event) {
+      const rect = button.getBoundingClientRect();
+      const x = event.clientX - rect.left - rect.width / 2;
+      const y = event.clientY - rect.top - rect.height / 2;
+      button.style.transform = "translate(" + (x * 0.05).toFixed(2) + "px," + (y * 0.05).toFixed(2) + "px)";
+    });
+    button.addEventListener("pointerleave", function () { button.style.transform = ""; });
+    button.addEventListener("click", function (event) {
+      const rect = button.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      const ripple = document.createElement("span");
+      ripple.className = "btn-ripple";
+      ripple.style.width = size + "px";
+      ripple.style.height = size + "px";
+      ripple.style.left = (event.clientX - rect.left - size / 2) + "px";
+      ripple.style.top = (event.clientY - rect.top - size / 2) + "px";
+      button.appendChild(ripple);
+      ripple.addEventListener("animationend", function () { ripple.remove(); });
+    });
+  });
+  if (ticker) {
+    const messages = ["Smart scheduling assistant online.", "Conflict-aware timetables in seconds.", "Department insights synced in real time."];
+    let idx = 0;
+    ticker.textContent = messages[0];
+    setInterval(function () {
+      idx = (idx + 1) % messages.length;
+      ticker.style.opacity = "0";
+      ticker.style.transform = "translateY(4px)";
+      setTimeout(function () { ticker.textContent = messages[idx]; ticker.style.opacity = "0.88"; ticker.style.transform = "translateY(0)"; }, 220);
+    }, 2800);
+  }
+})();
+</script>
+</body>
+</html>
+
+

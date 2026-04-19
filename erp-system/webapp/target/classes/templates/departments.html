@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Departments</title>
+    <link rel="stylesheet" href="/css/app.css">
+    <script src="/js/app.js"></script>
+</head>
+<body data-theme="light" data-motion="system" th:attr="data-theme=${user.theme != null ? user.theme : 'light'}, data-motion=${user.motionPref != null ? user.motionPref : 'system'}" class="experience-page departments-page">
+<div class="intelligence-layer" aria-hidden="true">
+    <div class="mesh-layer"></div>
+    <div class="grid-layer"></div>
+    <div class="orbs-layer">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="spotlight-layer"></div>
+</div>
+<div class="app-shell">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">AI</div>
+            <div class="brand-text">Decision ERP</div>
+        </div>
+        <nav class="nav">
+            <a href="/dashboard"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12l9-9 9 9"/><path d="M9 21V9h6v12"/></svg></span><span class="label">Dashboard</span></a>
+            <a href="/timetable"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span><span class="label">Timetable</span></a>
+            <a class="active" href="/departments"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M3 21h18"/><path d="M8 7h.01M12 7h.01M16 7h.01M8 11h.01M12 11h.01M16 11h.01"/></svg></span><span class="label">Departments</span></a>
+            <a href="/planning" th:if="${user.admin}"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="12" height="16" rx="2"/><path d="M9 4.5h6"/><path d="M9 10h6"/><path d="M9 14h4"/></svg></span><span class="label">Planning</span></a>
+            <a href="/subjects" th:if="${user.admin}"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h8a3 3 0 0 1 3 3v11H7a3 3 0 0 0-3 3z"/><path d="M20 5h-8a3 3 0 0 0-3 3v11h8a3 3 0 0 1 3 3z"/></svg></span><span class="label">Subjects</span></a>
+            <a href="/sections" th:if="${user.admin}"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l9 5-9 5-9-5 9-5z"/><path d="M3 12l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg></span><span class="label">Sections</span></a>
+            <a href="/timeslots" th:if="${user.admin}"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg></span><span class="label">Time Slots</span></a>
+            <a href="/availability" th:if="${user.admin}"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 15l2 2 4-4"/></svg></span><span class="label">Availability</span></a>
+            <a href="/faculty"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3-6 7-6"/><circle cx="17" cy="8" r="3"/><path d="M22 20c0-3.3-3-6-7-6"/></svg></span><span class="label">Faculty</span></a>
+            <a href="/rooms"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h12v18H4z"/><path d="M16 7h4v14H16z"/><circle cx="13" cy="12" r="1"/></svg></span><span class="label">Rooms</span></a>
+            <a href="/rooms/free"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></span><span class="label">Free Rooms</span></a>
+            <a href="/optimization"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/><circle cx="12" cy="12" r="3"/></svg></span><span class="label">AI Optimization</span></a>
+            <a href="/reports"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="9" width="3" height="9"/><rect x="17" y="6" width="3" height="12"/></svg></span><span class="label">Reports</span></a>
+            <a href="/settings"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="7" cy="18" r="2"/></svg></span><span class="label">Settings</span></a>
+        </nav>
+    </aside>
+
+    <header class="topbar">
+        <div class="search-wrap">
+            <button id="toggleSidebar" class="btn magnetic-btn">Sidebar</button>
+            <input id="globalSearch" type="text" placeholder="Search departments">
+        </div>
+        <div class="toolbar">
+            <button id="toggleTheme" class="btn magnetic-btn">Theme</button>
+            <button id="toggleInsight" class="btn magnetic-btn">Insights</button>
+            <button class="btn-primary magnetic-btn" onclick="openModal('addDeptModal')">Add Department</button>
+            <form method="post" action="/logout">
+                <button type="submit" class="btn magnetic-btn">Logout</button>
+            </form>
+        </div>
+    </header>
+
+    <main class="main">
+        <h1>Departments</h1>
+        <p class="muted">Budget anomaly visibility and resource summary.</p>
+        <div class="dept-grid">
+            <article class="dept-card tilt-card" th:each="d : ${departments}" th:attr="data-search=${#strings.toLowerCase(d.name)}">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <h3 style="margin:0;" th:text="${d.name}"></h3>
+                    <span class="pill" th:text="${d.aiRisk} + ' Risk'">Low Risk</span>
+                </div>
+                <p class="muted" th:text="'Faculty: ' + ${d.facultyCount} + ' | Subjects: ' + ${d.subjectCount}"></p>
+                <div class="progress"><span th:style="'width:' + ${#numbers.formatDecimal(d.budgetUsedPercent,1,1)} + '%'"></span></div>
+                <p class="muted" th:text="'Budget Used: ' + ${#numbers.formatDecimal(d.budgetUsedPercent,1,1)} + '%'"></p>
+                <div class="toolbar">
+                    <form method="post" action="/departments/update" class="toolbar">
+                        <input type="hidden" name="departmentId" th:value="${d.departmentId}">
+                        <input name="name" th:value="${d.name}" required>
+                        <input name="budgetLimit" type="number" min="1" step="0.01" th:value="${d.budgetLimit}" required>
+                        <button type="submit" class="btn magnetic-btn">Save</button>
+                    </form>
+                    <form method="post" action="/departments/delete" onsubmit="return confirm('Delete department?')">
+                        <input type="hidden" name="departmentId" th:value="${d.departmentId}">
+                        <button type="submit" class="btn magnetic-btn">Delete</button>
+                    </form>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <aside class="right-panel">
+        <h3>AI Insight Panel</h3>
+        <div class="card tilt-card">
+            <div class="muted">Budget anomaly detector</div>
+            <p class="muted">Departments over 90% spend are marked as High risk.</p>
+        </div>
+        <div class="card tilt-card">
+            <div class="muted">Action Guidance</div>
+            <p class="muted">Shift high-cost classes to lower-cost rooms when conflict-free.</p>
+        </div>
+    </aside>
+</div>
+
+<div id="addDeptModal" class="modal-backdrop" onclick="if(event.target===this)closeModal('addDeptModal')">
+    <div class="modal">
+        <h2>Add Department</h2>
+        <form method="post" action="/departments/add" class="grid" onsubmit="showToast('Department saved','success')">
+            <input name="name" placeholder="Department name" required>
+            <label>Budget: <input id="budgetSlider" type="range" min="1000" max="1000000" step="1000" value="50000"></label>
+            <input id="budgetInput" name="budgetLimit" type="number" min="1" step="0.01" value="50000" required>
+            <div class="toolbar">
+                <button type="submit" class="btn-primary magnetic-btn">Add</button>
+                <button type="button" class="btn magnetic-btn" onclick="closeModal('addDeptModal')">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    initShell();
+    const slider = document.getElementById("budgetSlider");
+    const budgetInput = document.getElementById("budgetInput");
+    if (slider && budgetInput) {
+        slider.addEventListener("input", function () { budgetInput.value = slider.value; });
+        budgetInput.addEventListener("input", function () { slider.value = budgetInput.value; });
+    }
+</script>
+</body>
+</html>
+
+
+
+
+

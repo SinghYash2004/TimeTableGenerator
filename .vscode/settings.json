@@ -1,0 +1,11 @@
+{
+    "java.project.sourcePaths": ["erp-system/src"],
+    "java.project.outputPath": "erp-system/bin",
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar"
+    ],
+    "code-runner.executorMap": {
+        "java": "cd $workspaceRoot && javac -cp \"lib/*\" -d erp-system/bin erp-system/src/Main.java erp-system/src/config/*.java erp-system/src/model/*.java erp-system/src/dao/*.java erp-system/src/scheduling/*.java erp-system/src/ai/*.java erp-system/src/finance/*.java erp-system/src/reporting/*.java && java -cp \"erp-system/bin;lib/*\" Main"
+    },
+    "java.compile.nullAnalysis.mode": "automatic"
+}

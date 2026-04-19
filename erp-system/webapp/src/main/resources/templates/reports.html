@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports</title>
+    <link rel="stylesheet" href="/css/app.css">
+    <script src="/js/app.js"></script>
+</head>
+<body data-theme="light" data-motion="system" th:attr="data-theme=${user.theme != null ? user.theme : 'light'}, data-motion=${user.motionPref != null ? user.motionPref : 'system'}" class="experience-page reports-page">
+<div class="intelligence-layer" aria-hidden="true">
+    <div class="mesh-layer"></div>
+    <div class="grid-layer"></div>
+    <div class="orbs-layer">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="spotlight-layer"></div>
+</div>
+<div class="app-shell">
+    <aside class="sidebar">
+        <div class="brand"><div class="brand-icon">AI</div><div class="brand-text">Decision ERP</div></div>
+        <nav class="nav">
+            <a href="/dashboard"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12l9-9 9 9"/><path d="M9 21V9h6v12"/></svg></span><span class="label">Dashboard</span></a>
+            <a href="/timetable"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span><span class="label">Timetable</span></a>
+            <a href="/departments"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M3 21h18"/><path d="M8 7h.01M12 7h.01M16 7h.01M8 11h.01M12 11h.01M16 11h.01"/></svg></span><span class="label">Departments</span></a>
+            <a href="/planning" th:if="${user.admin}"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="12" height="16" rx="2"/><path d="M9 4.5h6"/><path d="M9 10h6"/><path d="M9 14h4"/></svg></span><span class="label">Planning</span></a>
+            <a href="/subjects" th:if="${user.admin}"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h8a3 3 0 0 1 3 3v11H7a3 3 0 0 0-3 3z"/><path d="M20 5h-8a3 3 0 0 0-3 3v11h8a3 3 0 0 1 3 3z"/></svg></span><span class="label">Subjects</span></a>
+            <a href="/sections" th:if="${user.admin}"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l9 5-9 5-9-5 9-5z"/><path d="M3 12l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg></span><span class="label">Sections</span></a>
+            <a href="/timeslots" th:if="${user.admin}"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg></span><span class="label">Time Slots</span></a>
+            <a href="/availability" th:if="${user.admin}"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 15l2 2 4-4"/></svg></span><span class="label">Availability</span></a>
+            <a href="/faculty"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3-6 7-6"/><circle cx="17" cy="8" r="3"/><path d="M22 20c0-3.3-3-6-7-6"/></svg></span><span class="label">Faculty</span></a>
+            <a href="/rooms"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h12v18H4z"/><path d="M16 7h4v14H16z"/><circle cx="13" cy="12" r="1"/></svg></span><span class="label">Rooms</span></a>
+            <a href="/rooms/free"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></span><span class="label">Free Rooms</span></a>
+            <a href="/optimization"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/><circle cx="12" cy="12" r="3"/></svg></span><span class="label">AI Optimization</span></a>
+            <a class="active" href="/reports"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="9" width="3" height="9"/><rect x="17" y="6" width="3" height="12"/></svg></span><span class="label">Reports</span></a>
+            <a href="/settings"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="7" cy="18" r="2"/></svg></span><span class="label">Settings</span></a>
+        </nav>
+    </aside>
+    <header class="topbar">
+        <div class="search-wrap"><button id="toggleSidebar" class="btn magnetic-btn">Sidebar</button><input id="globalSearch" placeholder="Search reports"></div>
+        <div class="toolbar"><button id="toggleTheme" class="btn magnetic-btn">Theme</button><button id="toggleInsight" class="btn magnetic-btn">Insights</button></div>
+    </header>
+    <main class="main">
+        <h1>Reports & Analytics</h1>
+        <section class="card tilt-card">
+            <form method="get" action="/reports" class="filter-bar" id="reportsFilterForm">
+                <input type="text" id="reportSemester" name="semester" th:value="${semester}" placeholder="Semester code">
+                <select id="reportDepartment" name="departmentId">
+                    <option value="">All departments</option>
+                    <option th:each="d : ${departments}" th:value="${d.departmentId}" th:text="${d.name}" th:selected="${departmentId == d.departmentId}"></option>
+                </select>
+                <button type="submit" class="btn-primary magnetic-btn">Apply</button>
+            </form>
+            <div class="filter-bar" style="margin-top:10px;">
+                <input type="text" id="reportViewName" placeholder="Save view as">
+                <button type="button" class="btn magnetic-btn" id="saveReportView">Save View</button>
+                <select id="reportSavedViews">
+                    <option value="">Saved views</option>
+                </select>
+                <button type="button" class="btn magnetic-btn" id="applyReportView">Apply</button>
+                <button type="button" class="btn magnetic-btn" id="deleteReportView">Delete</button>
+            </div>
+            <div class="filter-bar" style="margin-top:10px;">
+                <a class="btn magnetic-btn" th:href="@{/reports/export(type='conflicts', semester=${semester}, departmentId=${departmentId})}">Export Conflicts</a>
+                <a class="btn magnetic-btn" th:href="@{/reports/export(type='overloads', semester=${semester}, departmentId=${departmentId})}">Export Overloads</a>
+                <a class="btn magnetic-btn" th:href="@{/reports/export(type='rooms', semester=${semester}, departmentId=${departmentId})}">Export Rooms</a>
+            </div>
+        </section>
+        <section class="card split">
+            <article class="card tilt-card"><h2>Conflict Summary</h2><p class="value metric-value" id="reportConflicts" th:attr="data-target=${summary.totalTimetableConflicts}" th:text="${summary.totalTimetableConflicts}">0</p></article>
+            <article class="card tilt-card"><h2>Budget Usage</h2><p class="value metric-value" id="reportBudget" th:attr="data-target=${summary.budgetUsagePercent}" th:text="${#numbers.formatDecimal(summary.budgetUsagePercent,1,1)} + '%'">0%</p></article>
+            <article class="card tilt-card"><h2>Utilization</h2><p class="value metric-value" id="reportUtil" th:attr="data-target=${summary.roomUtilizationPercent}" th:text="${#numbers.formatDecimal(summary.roomUtilizationPercent,1,1)} + '%'">0%</p></article>
+        </section>
+        <section class="card tilt-card">
+            <h2>Conflict Heatmap</h2>
+            <div id="conflictHeatmap" class="conflict-heatmap"></div>
+            <p class="muted" style="margin-top:10px;">Click a cell to see the underlying conflicts.</p>
+        </section>
+        <section class="card tilt-card">
+            <h2>Conflict Drilldown</h2>
+            <div class="table-wrap">
+                <table id="conflictsTable">
+                    <thead><tr><th>Type</th><th>Department</th><th>Slot</th><th>Day</th><th>Period</th><th>Entity</th><th>Count</th></tr></thead>
+                    <tbody>
+                    <tr th:each="c:${conflicts}" th:attr="data-search=${#strings.toLowerCase(c.type + ' ' + c.departmentName + ' ' + c.entityName)}">
+                        <td th:text="${c.type}"></td>
+                        <td th:text="${c.departmentName}"></td>
+                        <td th:text="${c.slotId}"></td>
+                        <td th:text="${c.day}"></td>
+                        <td th:text="${c.period}"></td>
+                        <td th:text="${c.entityName}"></td>
+                        <td th:text="${c.count}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <section class="card tilt-card">
+            <h2>Faculty Overload</h2>
+            <div class="table-wrap">
+                <table id="overloadTable">
+                    <thead><tr><th>Faculty</th><th>Department</th><th>Assigned</th><th>Max Hours</th></tr></thead>
+                    <tbody>
+                    <tr th:each="o:${overloads}" th:attr="data-search=${#strings.toLowerCase(o.facultyName + ' ' + o.departmentName)}">
+                        <td th:text="${o.facultyName}"></td>
+                        <td th:text="${o.departmentName}"></td>
+                        <td th:text="${o.assigned}"></td>
+                        <td th:text="${o.maxHours}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <section class="card tilt-card">
+            <h2>Room Utilization</h2>
+            <div class="table-wrap">
+                <table id="roomUtilTable">
+                    <thead><tr><th>Room</th><th>Assigned Slots</th><th>Total Slots</th><th>Utilization %</th></tr></thead>
+                    <tbody>
+                    <tr th:each="r:${rooms}" th:attr="data-search=${#strings.toLowerCase(r.roomCode)}">
+                        <td th:text="${r.roomCode}"></td>
+                        <td th:text="${r.assignedSlots}"></td>
+                        <td th:text="${r.totalSlots}"></td>
+                        <td th:text="${#numbers.formatDecimal(r.utilizationPercent,1,1)} + '%'"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <aside class="right-panel"><h3>Export</h3><div class="card tilt-card"><p class="muted">Use Timetable page for CSV export.</p></div></aside>
+</div>
+<div id="reportsData"
+     th:data-conflicts="${summary.totalTimetableConflicts}"
+     th:data-budget="${summary.budgetUsagePercent}"
+     th:data-room-util="${summary.roomUtilizationPercent}"
+     style="display:none;"></div>
+<div class="modal-backdrop" id="conflictHeatmapModal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+            <h3 id="conflictHeatmapTitle">Conflict Details</h3>
+            <button type="button" class="btn magnetic-btn" onclick="closeModal('conflictHeatmapModal')">Close</button>
+        </div>
+        <ul id="conflictHeatmapList" style="margin:12px 0 0; padding-left:18px;"></ul>
+    </div>
+</div>
+<script>
+    initShell();
+    attachTableSort("#conflictsTable");
+    attachTableSort("#overloadTable");
+    attachTableSort("#roomUtilTable");
+    const rs = document.getElementById("reportsData");
+    initReportsExperience({
+        conflicts: Number(rs?.dataset?.conflicts || 0),
+        budget: Number(rs?.dataset?.budget || 0),
+        roomUtil: Number(rs?.dataset?.roomUtil || 0)
+    });
+    initReportSavedViews();
+    initReportsHeatmap();
+</script>
+</body>
+</html>
+
+
+
+
+

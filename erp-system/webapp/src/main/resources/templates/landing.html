@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timetable Intelligence Platform</title>
+  
+  <!-- Inter & Newsreader for the premium paired typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@1,6..72,300;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/landing.css">
+</head>
+<body class="landing-page dark-mode">
+
+<!-- Physical Noise Texture & Aurora Background -->
+<div class="noise-overlay"></div>
+<div class="aurora-bg">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+<canvas id="heroCanvas" aria-hidden="true"></canvas>
+
+<!-- Infinite Marquee Background -->
+<div class="ambient-marquee">
+  <div class="marquee-track">
+    <span>POWERED BY NEURAL SCHEDULING • ZERO CONFLICTS • MULTI-DEPARTMENT SYNC • </span>
+    <span>POWERED BY NEURAL SCHEDULING • ZERO CONFLICTS • MULTI-DEPARTMENT SYNC • </span>
+    <span>POWERED BY NEURAL SCHEDULING • ZERO CONFLICTS • MULTI-DEPARTMENT SYNC • </span>
+    <span>POWERED BY NEURAL SCHEDULING • ZERO CONFLICTS • MULTI-DEPARTMENT SYNC • </span>
+  </div>
+</div>
+
+<div class="landing-shell">
+  <header class="navbar container">
+    <div class="brand">
+      <div class="brand-logo">
+         <svg viewBox="0 0 24 24" fill="none" class="brand-icon">
+           <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+           <circle cx="8" cy="12" r="3" fill="#4f46e5" stroke="#000" stroke-width="1.5"/>
+         </svg>
+      </div>
+      <span class="brand-text">Timetable Nexus</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#features" class="magnetic-item">Platform</a>
+      <a href="#insights" class="magnetic-item">Intelligence</a>
+      <a href="#cta" class="magnetic-item">Resources</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-ghost" href="/login">Sign In</a>
+      <a class="btn btn-primary" href="/login?mode=signup">Start Free</a>
+    </div>
+  </header>
+
+  <section class="hero container">
+    <div class="hero-split">
+      <!-- Left side: Typography & Call to Actions -->
+      <div class="hero-copy">
+        <div class="badge reveal-element">
+          <span class="badge-dot"></span> Next-Gen Optimizer Engine v2.0
+        </div>
+        <h1 class="hero-title">
+          <span class="reveal-mask">Schedule precision.</span><br/>
+          <span class="reveal-mask serif-italic text-indigo">Effortlessly</span> <span class="reveal-mask">orchestrated.</span>
+        </h1>
+        <p class="hero-subtitle reveal-element" data-delay="0.2s">
+          The elite standard for enterprise timetable management. We blend rigorous mathematical optimization with an incredibly fluid interface to completely eliminate scheduling conflicts.
+        </p>
+        
+        <div class="hero-actions reveal-element" data-delay="0.4s">
+          <a class="btn btn-primary btn-large" href="/login">Launch Dashboard</a>
+          <a class="btn btn-secondary btn-large" href="#features">Documentation</a>
+        </div>
+      </div>
+
+      <!-- Right side: Isometric 3D Scrollytelling Stack -->
+      <div class="hero-isometric-stage" id="iso-stage">
+        <div class="iso-grid-container">
+          <!-- The 3 layers of a schedule (Rooms, Faculty, Subjects) stacked in 3D -->
+          <div class="iso-layer iso-layer-3 iso-glass">
+            <div class="iso-header">Faculty Assignment</div>
+            <div class="iso-blocks">
+               <div class="block b-indigo"></div><div class="block b-gray"></div><div class="block b-gray"></div>
+            </div>
+          </div>
+          
+          <div class="iso-layer iso-layer-2 iso-glass">
+             <div class="iso-header">Course Sections</div>
+             <div class="iso-blocks">
+                <div class="block b-gray"></div><div class="block b-indigo"></div><div class="block b-gray"></div>
+             </div>
+          </div>
+          
+          <div class="iso-layer iso-layer-1 iso-solid">
+             <div class="iso-header">Room Grid Matrix</div>
+             <div class="iso-blocks">
+                <div class="block b-gray"></div><div class="block b-gray"></div><div class="block b-indigo"></div>
+             </div>
+          </div>
+          
+          <!-- Connective beam between layers when they stack -->
+          <div class="iso-connector c-1"></div>
+          <div class="iso-connector c-2"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-header reveal-element">
+        <h2 class="section-title">Engineered for absolute scale.</h2>
+        <p class="section-subtitle">Balance faculty workloads, room availability, and section coverage through a hyper-refined control center.</p>
+      </div>
+
+      <div class="bento-grid">
+        <!-- Card 1: Optimization Engine -->
+        <article class="bento-card bento-wide glass-panel hover-glow reveal-element" data-delay="0.1s">
+          <div class="bento-content">
+            <div class="bento-text">
+              <div class="bento-icon">
+                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              </div>
+              <h3>Graph-Coloring Engine</h3>
+              <p>Our proprietary heuristic scheduler removes overlaps automatically. We analyze constraint grids across thousands of variables to verify mathematical perfection.</p>
+            </div>
+            
+            <div class="bento-visual viz-sort">
+              <div class="sort-lines">
+                 <div class="s-line" style="height: 40%"></div>
+                 <div class="s-line" style="height: 80%"></div>
+                 <div class="s-line" style="height: 20%"></div>
+                 <div class="s-line" style="height: 100%"></div>
+                 <div class="s-line" style="height: 60%"></div>
+                 <div class="s-line" style="height: 50%"></div>
+                 <div class="s-line active" style="height: 90%"></div>
+                 <div class="s-line" style="height: 30%"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 2: Availability -->
+        <article class="bento-card glass-panel hover-glow reveal-element" data-delay="0.2s">
+          <div class="bento-content vertical">
+             <div class="bento-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+             </div>
+             <h3>Availability Sync</h3>
+             <p>Merge faculty and room availability into an immutable source of truth timeline.</p>
+          </div>
+        </article>
+        
+        <!-- Card 3: Export Reports -->
+        <article class="bento-card glass-panel hover-glow reveal-element" data-delay="0.3s">
+          <div class="bento-content vertical">
+            <div class="bento-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </div>
+            <h3>Export Infrastructure</h3>
+            <p>Generate highly structured department summaries in raw formats instantly.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="bento-grid grid-alt">
+         <!-- Interactive Heatmap Card -->
+         <article class="bento-card bento-wide glass-panel hover-glow reveal-element" data-delay="0.1s">
+            <div class="bento-content">
+               <div class="bento-text">
+                  <div class="bento-icon">
+                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                  </div>
+                  <h3>Conflict Forecasting</h3>
+                  <p>Proactive AI spots clash hotspots before you publish. The predictive model warns you the exact moment physical constraints are violated.</p>
+               </div>
+               
+               <div class="bento-visual viz-heatmap" id="interactive-heatmap">
+                  <div class="hm-grid">
+                     <div class="hm-cell safe"></div><div class="hm-cell safe"></div><div class="hm-cell safe"></div><div class="hm-cell safe"></div>
+                     <div class="hm-cell safe"></div><div class="hm-cell safe"></div><div class="hm-cell warning"></div><div class="hm-cell safe"></div>
+                     <div class="hm-cell safe"></div><div class="hm-cell danger"></div><div class="hm-cell safe"></div><div class="hm-cell safe"></div>
+                     <div class="hm-cell safe"></div><div class="hm-cell safe"></div><div class="hm-cell safe"></div><div class="hm-cell safe"></div>
+                  </div>
+               </div>
+            </div>
+         </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="cta">
+    <div class="container">
+      <div class="cta-banner glass-panel hover-glow reveal-element">
+        <div class="cta-inner">
+           <h2>Command the timetable.</h2>
+           <p>Stop chasing faculty emails and room swaps. Centralize the logic.</p>
+           <div class="hero-actions" style="justify-content: center; margin-top: 32px;">
+             <a class="btn btn-primary btn-large" href="/login">Get Started</a>
+             <a class="btn btn-secondary btn-large" href="/login?mode=signup">Contact Sales</a>
+           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <footer class="footer container">
+     <div class="footer-inner">
+       <span class="text-muted">© 2026 Timetable Nexus. Enterprise Edition.</span>
+       <div class="footer-links">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">System Status</a>
+       </div>
+     </div>
+  </footer>
+</div>
+
+<script src="/js/landing.js"></script>
+</body>
+</html>

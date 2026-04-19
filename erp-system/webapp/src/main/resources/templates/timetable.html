@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timetable</title>
+    <link rel="stylesheet" href="/css/app.css">
+    <script src="/js/app.js"></script>
+</head>
+<body data-theme="light" data-motion="system" th:attr="data-theme=${user.theme != null ? user.theme : 'light'}, data-motion=${user.motionPref != null ? user.motionPref : 'system'}" class="experience-page timetable-page">
+<div class="intelligence-layer" aria-hidden="true">
+    <div class="mesh-layer"></div>
+    <div class="grid-layer"></div>
+    <div class="orbs-layer">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="spotlight-layer"></div>
+</div>
+<div class="app-shell">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">AI</div>
+            <div class="brand-text">Decision ERP</div>
+        </div>
+        <nav class="nav">
+            <a href="/dashboard"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12l9-9 9 9"/><path d="M9 21V9h6v12"/></svg></span><span class="label">Dashboard</span></a>
+            <a class="active" href="/timetable"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span><span class="label">Timetable</span></a>
+            <a href="/departments"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M3 21h18"/><path d="M8 7h.01M12 7h.01M16 7h.01M8 11h.01M12 11h.01M16 11h.01"/></svg></span><span class="label">Departments</span></a>
+            <a href="/planning" th:if="${user.admin}"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="12" height="16" rx="2"/><path d="M9 4.5h6"/><path d="M9 10h6"/><path d="M9 14h4"/></svg></span><span class="label">Planning</span></a>
+            <a href="/subjects" th:if="${user.admin}"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h8a3 3 0 0 1 3 3v11H7a3 3 0 0 0-3 3z"/><path d="M20 5h-8a3 3 0 0 0-3 3v11h8a3 3 0 0 1 3 3z"/></svg></span><span class="label">Subjects</span></a>
+            <a href="/sections" th:if="${user.admin}"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l9 5-9 5-9-5 9-5z"/><path d="M3 12l9 5 9-5"/><path d="M3 17l9 5 9-5"/></svg></span><span class="label">Sections</span></a>
+            <a href="/timeslots" th:if="${user.admin}"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg></span><span class="label">Time Slots</span></a>
+            <a href="/availability" th:if="${user.admin}"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9 15l2 2 4-4"/></svg></span><span class="label">Availability</span></a>
+            <a href="/faculty"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3-6 7-6"/><circle cx="17" cy="8" r="3"/><path d="M22 20c0-3.3-3-6-7-6"/></svg></span><span class="label">Faculty</span></a>
+            <a href="/rooms"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h12v18H4z"/><path d="M16 7h4v14H16z"/><circle cx="13" cy="12" r="1"/></svg></span><span class="label">Rooms</span></a>
+            <a href="/rooms/free"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></span><span class="label">Free Rooms</span></a>
+            <a href="/optimization"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/><circle cx="12" cy="12" r="3"/></svg></span><span class="label">AI Optimization</span></a>
+            <a href="/reports"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="9" width="3" height="9"/><rect x="17" y="6" width="3" height="12"/></svg></span><span class="label">Reports</span></a>
+            <a href="/settings"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="7" cy="18" r="2"/></svg></span><span class="label">Settings</span></a>
+        </nav>
+    </aside>
+
+    <header class="topbar">
+        <div class="search-wrap">
+            <button id="toggleSidebar" class="btn magnetic-btn">Sidebar</button>
+            <input id="globalSearch" type="text" placeholder="Search timetable">
+            <span class="badge critical pulse-critical">Conflicts Live</span>
+        </div>
+        <div class="toolbar">
+            <button id="toggleTheme" class="btn magnetic-btn">Theme</button>
+            <button id="toggleInsight" class="btn magnetic-btn">Insights</button>
+            <form method="post" action="/logout">
+                <button type="submit" class="btn magnetic-btn">Logout</button>
+            </form>
+        </div>
+    </header>
+
+    <main class="main">
+        <h1>Timetable Control Center</h1>
+        <p class="muted">Build, analyze, and export schedules with conflict-aware controls.</p>
+        <p class="muted" th:if="${message}" th:text="${message}"></p>
+
+        <section class="card tilt-card">
+            <form method="get" action="/timetable" class="filter-bar">
+                <input type="text" name="semester" th:value="${semester}" placeholder="Semester code" required>
+                <select name="departmentId">
+                    <option th:each="d : ${departments}" th:value="${d.departmentId}" th:text="${d.name}" th:selected="${departmentId == d.departmentId}"></option>
+                </select>
+                <input type="number" min="1" name="semesterNo" th:value="${semesterNo}" placeholder="Semester no">
+                <select name="previewSectionId">
+                    <option value="">Preview section</option>
+                    <option th:each="s : ${sections}" th:value="${s.sectionId}" th:text="${s.sectionName}" th:selected="${previewSectionId == s.sectionId}"></option>
+                </select>
+                <button class="btn-primary magnetic-btn" type="submit">Load</button>
+            </form>
+            <div class="filter-bar" style="margin-top:10px;">
+                <form method="post" action="/timetable/detect" class="filter-bar">
+                    <input type="hidden" name="semester" th:value="${semester}">
+                    <input type="hidden" name="departmentId" th:value="${departmentId}">
+                    <input type="hidden" name="semesterNo" th:value="${semesterNo}">
+                    <button type="submit" class="magnetic-btn">Detect Conflicts</button>
+                </form>
+                <form method="post" action="/timetable/generate" class="filter-bar">
+                    <input type="hidden" name="semester" th:value="${semester}">
+                    <input type="hidden" name="departmentId" th:value="${departmentId}">
+                    <input type="hidden" name="semesterNo" th:value="${semesterNo}">
+                    <input type="text" name="sectionIds" placeholder="Section IDs 1,2,3">
+                    <select name="algorithm">
+                        <option value="GREEDY">Greedy</option>
+                        <option value="GRAPH">Graph Coloring</option>
+                    </select>
+                    <button type="submit" class="btn-primary magnetic-btn">Optimize</button>
+                </form>
+                <form method="get" action="/timetable/export" class="filter-bar">
+                    <input type="hidden" name="semester" th:value="${semester}">
+                    <input type="hidden" name="departmentId" th:value="${departmentId}">
+                    <button type="submit" class="magnetic-btn">Export CSV</button>
+                </form>
+                <button type="button" class="magnetic-btn screen-only" onclick="window.print()">Print Preview</button>
+            </div>
+        </section>
+
+        <section class="card tilt-card" th:if="${user.admin}">
+            <h2 class="section-title">Manual Entry</h2>
+            <form method="post" action="/timetable/add" class="filter-bar">
+                <input type="hidden" name="semester" th:value="${semester}">
+                <input type="hidden" name="departmentId" th:value="${departmentId}">
+                <select name="sectionId">
+                    <option value="">Section</option>
+                    <option th:each="s : ${adminSections}" th:value="${s.sectionId}" th:text="${s.sectionName}"></option>
+                </select>
+                <select name="subjectId" required>
+                    <option value="">Subject</option>
+                    <option th:each="s : ${subjects}" th:value="${s.subjectId}" th:text="${s.name}"></option>
+                </select>
+                <select name="facultyId" required>
+                    <option value="">Faculty</option>
+                    <option th:each="f : ${faculty}" th:value="${f.facultyId}" th:text="${f.name}"></option>
+                </select>
+                <select name="roomId" required>
+                    <option value="">Room</option>
+                    <option th:each="r : ${rooms}" th:value="${r.roomId}" th:text="${r.roomCode}"></option>
+                </select>
+                <select name="slotId" required>
+                    <option value="">Slot</option>
+                    <option th:each="t : ${timeslots}" th:value="${t.slotId}" th:text="${t.day + ' P' + t.period}"></option>
+                </select>
+                <button type="submit" class="btn-primary magnetic-btn">Add Entry</button>
+            </form>
+            <form method="post" action="/timetable/update" class="filter-bar" style="margin-top:10px;">
+                <input type="number" min="1" name="entryId" placeholder="Entry ID" required>
+                <input type="hidden" name="semester" th:value="${semester}">
+                <input type="hidden" name="departmentId" th:value="${departmentId}">
+                <select name="sectionId">
+                    <option value="">Section</option>
+                    <option th:each="s : ${adminSections}" th:value="${s.sectionId}" th:text="${s.sectionName}"></option>
+                </select>
+                <select name="subjectId" required>
+                    <option value="">Subject</option>
+                    <option th:each="s : ${subjects}" th:value="${s.subjectId}" th:text="${s.name}"></option>
+                </select>
+                <select name="facultyId" required>
+                    <option value="">Faculty</option>
+                    <option th:each="f : ${faculty}" th:value="${f.facultyId}" th:text="${f.name}"></option>
+                </select>
+                <select name="roomId" required>
+                    <option value="">Room</option>
+                    <option th:each="r : ${rooms}" th:value="${r.roomId}" th:text="${r.roomCode}"></option>
+                </select>
+                <select name="slotId" required>
+                    <option value="">Slot</option>
+                    <option th:each="t : ${timeslots}" th:value="${t.slotId}" th:text="${t.day + ' P' + t.period}"></option>
+                </select>
+                <button type="submit" class="btn magnetic-btn">Update Entry</button>
+            </form>
+            <form method="post" action="/timetable/delete" class="filter-bar" style="margin-top:10px;" onsubmit="return confirm('Delete timetable entry?')">
+                <input type="number" min="1" name="entryId" placeholder="Entry ID" required>
+                <input type="hidden" name="semester" th:value="${semester}">
+                <input type="hidden" name="departmentId" th:value="${departmentId}">
+                <button type="submit" class="btn magnetic-btn">Delete Entry</button>
+            </form>
+            <p class="muted" style="margin-top:6px;">Use the entry ID from the grid below.</p>
+        </section>
+
+        <section class="card tilt-card">
+            <h2 class="section-title">Cancel Class (One Date)</h2>
+            <form method="post" action="/timetable/cancel" class="filter-bar">
+                <input type="number" min="1" name="entryId" placeholder="Entry ID" required>
+                <input type="hidden" name="semester" th:value="${semester}">
+                <input type="hidden" name="departmentId" th:value="${departmentId}">
+                <input type="date" name="cancelDate" required>
+                <input type="text" name="reason" placeholder="Reason (optional)">
+                <button type="submit" class="btn-primary magnetic-btn">Cancel</button>
+            </form>
+            <form method="post" action="/timetable/uncancel" class="filter-bar" style="margin-top:10px;">
+                <input type="number" min="1" name="entryId" placeholder="Entry ID" required>
+                <input type="hidden" name="semester" th:value="${semester}">
+                <input type="hidden" name="departmentId" th:value="${departmentId}">
+                <input type="date" name="cancelDate" required>
+                <button type="submit" class="btn magnetic-btn">Remove Cancellation</button>
+            </form>
+            <p class="muted" style="margin-top:6px;">Faculty can cancel only their own classes. Admins can cancel any class.</p>
+        </section>
+
+        <section class="card tilt-card">
+            <h2 class="section-title">Cancel + Rebook (One Date)</h2>
+            <form method="post" action="/timetable/rebook" class="filter-bar">
+                <input type="number" min="1" name="entryId" placeholder="Entry ID" required>
+                <input type="hidden" name="semester" th:value="${semester}">
+                <input type="hidden" name="departmentId" th:value="${departmentId}">
+                <select name="newRoomId" required>
+                    <option value="">New Room</option>
+                    <option th:each="r : ${rooms}" th:value="${r.roomId}" th:text="${r.roomCode}"></option>
+                </select>
+                <select name="newSlotId" required>
+                    <option value="">New Slot</option>
+                    <option th:each="t : ${timeslots}" th:value="${t.slotId}" th:text="${t.day + ' P' + t.period}"></option>
+                </select>
+                <input type="date" name="date" required>
+                <input type="text" name="reason" placeholder="Reason (optional)">
+                <button type="submit" class="btn-primary magnetic-btn">Rebook</button>
+            </form>
+            <p class="muted" style="margin-top:6px;">This cancels the original class for the date and reserves the new room/slot for that date.</p>
+        </section>
+
+        <section class="card tilt-card">
+            <h2 class="section-title">Interactive Grid</h2>
+            <div class="table-wrap">
+                <table id="ttTable">
+                    <thead>
+                    <tr>
+                        <th data-sort="id">Entry ID</th>
+                        <th data-sort="semester">Semester</th>
+                        <th data-sort="department">Department</th>
+                        <th data-sort="section">Section</th>
+                        <th data-sort="day">Day</th>
+                        <th data-sort="period">Period</th>
+                        <th data-sort="subject">Subject</th>
+                        <th data-sort="faculty">Faculty</th>
+                        <th data-sort="room">Room</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="r : ${rows}"
+                        th:classappend="(${r.facultyConflict} ? 'row-faculty-conflict ' : '') + (${r.roomConflict} ? 'row-room-conflict ' : '') + (${r.overloadWarning} ? 'row-overload' : '')"
+                        th:attr="data-search=${#strings.toLowerCase(r.semester + ' ' + r.departmentName + ' ' + r.sectionName + ' ' + r.subjectName + ' ' + r.facultyName + ' ' + r.roomCode)}"
+                        th:data-detail="${r.day + ' Period ' + r.period + ' | ' + r.subjectName + ' | ' + r.facultyName + ' | ' + r.roomCode}"
+                        onclick="document.getElementById('detailText').textContent=this.dataset.detail; openModal('detailModal')">
+                        <td th:text="${r.entryId}"></td>
+                        <td th:text="${r.semester}"></td>
+                        <td th:text="${r.departmentName}"></td>
+                        <td th:text="${r.sectionName}"></td>
+                        <td th:text="${r.day}"></td>
+                        <td th:text="${r.period}"></td>
+                        <td th:text="${r.subjectName}"></td>
+                        <td th:text="${r.facultyName}"></td>
+                        <td th:text="${r.roomCode}"></td>
+                        <td>
+                            <span class="badge warn" th:if="${r.canceledAny}" title="One or more cancellations">Canceled</span>
+                            <span class="badge critical" th:if="${r.facultyConflict}" title="Faculty clash">Faculty Clash</span>
+                            <span class="badge warn" th:if="${r.roomConflict}" title="Room conflict">Room Conflict</span>
+                            <span class="badge good" th:if="${!r.facultyConflict and !r.roomConflict and !r.overloadWarning and !r.canceledAny}">OK</span>
+                            <span class="badge" th:if="${r.overloadWarning}" style="background:rgba(59,130,246,.15);color:#3b82f6;" title="Overload warning">Overload</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card tilt-card">
+            <h2 class="section-title">Timetable Preview</h2>
+            <p class="muted" th:if="${previewSectionName}" th:text="'Section ' + ${previewSectionName} + ' overview'"></p>
+            <p class="muted" th:if="${previewRows == null or #lists.isEmpty(previewRows)}">No timetable entries available for preview.</p>
+            <div class="table-wrap preview-wrap" th:if="${previewRows != null and !#lists.isEmpty(previewRows)}">
+                <table class="preview-table">
+                    <thead>
+                    <tr>
+                        <th class="preview-day">Day</th>
+                        <th th:each="p : ${previewPeriods}" th:text="'P' + ${p}"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="row : ${previewRows}">
+                        <td class="preview-day" th:text="${row.day}"></td>
+                        <td th:each="cell : ${row.cells}" th:classappend="${cell.conflict} ? 'preview-cell conflict' : 'preview-cell'">
+                            <div class="cell-subject" th:text="${cell.subject}" th:if="${cell.subject != null and !cell.subject.isBlank()}"></div>
+                            <div class="cell-empty" th:if="${cell.subject == null or cell.subject.isBlank()}">—</div>
+                            <div class="cell-meta" th:text="${cell.room}" th:if="${cell.room != null and !cell.room.isBlank()}"></div>
+                            <div class="cell-meta" th:text="${cell.faculty}" th:if="${cell.faculty != null and !cell.faculty.isBlank()}"></div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="print-sheet print-only">
+            <div class="print-header">
+                <div class="print-title">Timetable Preview</div>
+                <div class="print-subtitle">
+                    <span th:text="${previewDepartmentName != null ? previewDepartmentName : 'Department'}"></span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span th:text="${previewSectionName != null ? 'Section ' + previewSectionName : 'Section'}"></span>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span th:text="${semester}"></span>
+                </div>
+            </div>
+
+            <table class="print-table" th:if="${previewRows != null and !#lists.isEmpty(previewRows)}">
+                <thead>
+                <tr>
+                    <th>Day</th>
+                    <th th:each="p : ${previewPeriods}" th:text="'P' + ${p}"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="row : ${previewRows}">
+                    <td th:text="${row.day}"></td>
+                    <td th:each="cell : ${row.cells}">
+                        <div class="print-cell-subject" th:text="${cell.subject}" th:if="${cell.subject != null and !cell.subject.isBlank()}"></div>
+                        <div class="print-cell-meta" th:text="${cell.room}" th:if="${cell.room != null and !cell.room.isBlank()}"></div>
+                        <div class="print-cell-meta" th:text="${cell.faculty}" th:if="${cell.faculty != null and !cell.faculty.isBlank()}"></div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <table class="print-legend" th:if="${previewLegend != null and !#lists.isEmpty(previewLegend)}">
+                <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Periods/Week</th>
+                    <th>Faculty</th>
+                    <th>Room</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${previewLegend}">
+                    <td th:text="${item.subject}"></td>
+                    <td th:text="${item.periodsPerWeek}"></td>
+                    <td th:text="${item.faculty}"></td>
+                    <td th:text="${item.room}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <aside class="right-panel">
+        <h3>AI Insight Panel</h3>
+        <div class="card tilt-card">
+            <div class="muted">Conflict Legend</div>
+            <p class="muted">Red border: Faculty clash</p>
+            <p class="muted">Yellow border: Room conflict</p>
+            <p class="muted">Blue border: Overload warning</p>
+        </div>
+        <div class="card tilt-card">
+            <div class="muted">Optimization Tips</div>
+            <p class="muted">Use Graph Coloring for fewer clashes when slot pressure is high.</p>
+        </div>
+    </aside>
+</div>
+
+<div id="detailModal" class="modal-backdrop" onclick="if(event.target===this)closeModal('detailModal')">
+    <div class="modal">
+        <h2>Row Details</h2>
+        <p id="detailText"></p>
+        <button type="button" class="btn magnetic-btn" onclick="closeModal('detailModal')">Close</button>
+    </div>
+</div>
+
+<script>
+    initShell();
+    attachTableSort("#ttTable");
+</script>
+</body>
+</html>
+
+
+
+

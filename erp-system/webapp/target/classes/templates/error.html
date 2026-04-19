@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error</title>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body data-theme="light">
+<main class="container" style="display:grid;place-items:center;min-height:100vh;">
+    <div class="card" style="max-width:560px;">
+        <h1 th:text="${title}">Application Error</h1>
+        <p class="error" th:text="${message}">Unexpected error occurred.</p>
+        <a class="btn" href="/login">Back to Login</a>
+    </div>
+</main>
+</body>
+</html>
+
+
