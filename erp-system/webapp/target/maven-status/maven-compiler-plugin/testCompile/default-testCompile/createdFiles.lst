@@ -1,1 +1,3 @@
 com\erp\web\scheduler\SchedulerConstraintsTest.class
+com\erp\web\web\DashboardControllerApiTest.class
+com\erp\web\web\DashboardControllerApiTest$1.class
