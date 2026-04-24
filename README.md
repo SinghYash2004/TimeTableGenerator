@@ -88,7 +88,7 @@ TimetableGenerator/
 - **Database**: MySQL/SQL
 - **Build Tool**: Maven
 - **Scheduling Algorithms**: Genetic Algorithm, Graph Coloring, Greedy
-- **Architecture**: MVC with DAO patterns
+- **Architecture**: MVC with DAO pattern
 
 ## Prerequisites
 
