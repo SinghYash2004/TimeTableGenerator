@@ -89,6 +89,7 @@ TimetableGenerator/
 - **Build Tool**: Maven
 - **Scheduling Algorithms**: Genetic Algorithm, Graph Coloring, Greedy
 - **Architecture**: MVC with DAO pattern
+
 ## Prerequisites
 
 - Java 8 or higher
