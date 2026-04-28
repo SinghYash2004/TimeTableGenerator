@@ -26,7 +26,6 @@ public class BudgetManager {
         }
 
         double total = 0.0;
-        
         for (TimetableEntry entry : entries) {
             Faculty faculty = facultyById.get(entry.getFacultyId());
             Classroom room = roomById.get(entry.getRoomId());
