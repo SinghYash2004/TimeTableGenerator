@@ -91,6 +91,7 @@ TimetableGenerator/
 - **Architecture**: MVC with DAO pattern
 
 ## Prerequisites
+
 - Java 8 or higher
 - Maven 3.6+
 - MySQL 5.7 or higher
