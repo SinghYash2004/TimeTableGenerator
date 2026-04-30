@@ -8,11 +8,11 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /app
 
-# Copy jar from builder
 COPY --from=builder /app/target/erp-webapp-1.0.0.jar app.jar
 
-# Expose port
+# Render uses dynamic PORT
+ENV PORT=8081
+
 EXPOSE 8081
 
-# Run app
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=$PORT"]
