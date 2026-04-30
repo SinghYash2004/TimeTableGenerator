@@ -32,7 +32,7 @@ public class AuthService {
 
     public UserSession authenticate(String username, String password) {
         try {
-            String sql = "SELECT u.username, u.role, u.faculty_id, f.department_id, u.theme, u.motion_pref, u.password_hash " +
+            String sql = "SELECT u.username, u.role, u.faculty_id, f.department_id, u.password_hash " +
                     "FROM users u LEFT JOIN faculty f ON f.faculty_id = u.faculty_id " +
                     "WHERE u.username = ? AND u.active = true";
             List<UserSession> rows = jdbcTemplate.query(sql, (rs, i) -> {
@@ -42,9 +42,7 @@ public class AuthService {
                             rs.getString("username"),
                             rs.getString("role"),
                             (Integer) rs.getObject("faculty_id"),
-                            (Integer) rs.getObject("department_id"),
-                            rs.getString("theme"),
-                            rs.getString("motion_pref")
+                            (Integer) rs.getObject("department_id")
                     );
                 }
                 return null;
@@ -111,8 +109,7 @@ public class AuthService {
     }
 
     public void updatePreferences(String username, String theme, String motionPref) {
-        String sql = "UPDATE users SET theme=?, motion_pref=? WHERE username=?";
-        jdbcTemplate.update(sql, theme, motionPref, username);
+        // Preference storage not supported in current DB schema
     }
 
     public String createPasswordResetToken(String username) {
