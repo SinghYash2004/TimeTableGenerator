@@ -68,7 +68,7 @@ public class ReportsRepository {
         String sql = "SELECT f.name AS faculty_name, d.name AS department_name, f.max_hours_per_week, COUNT(t.id) AS assigned " +
                 "FROM faculty f " +
                 "JOIN department d ON d.department_id = f.department_id " +
-                "LEFT JOIN timetable t ON t.faculty_id = f.faculty_id AND t.semester = ? " +
+                "LEFT JOIN timetable t ON t.faculty_id = f.faculty_id AND t.semester = CAST(? AS VARCHAR) " +
                 "WHERE 1=1 " + deptFilter +
                 "GROUP BY f.faculty_id, f.name, d.name, f.max_hours_per_week " +
                 "HAVING COUNT(t.id) > f.max_hours_per_week " +
@@ -91,7 +91,7 @@ public class ReportsRepository {
 
         String sql = "SELECT c.room_code, COUNT(t.id) AS assigned " +
                 "FROM classroom c " +
-                "LEFT JOIN timetable t ON t.room_id = c.room_id AND t.semester = ? " + deptFilter +
+                "LEFT JOIN timetable t ON t.room_id = c.room_id AND t.semester = CAST(? AS VARCHAR) " + deptFilter +
                 "GROUP BY c.room_id, c.room_code ORDER BY assigned DESC";
         return jdbcTemplate.query(sql, (rs, i) -> {
             int assigned = rs.getInt("assigned");

@@ -28,7 +28,7 @@ public class DashboardRepository {
         Integer overloadedCount = jdbcTemplate.queryForObject(
                 "SELECT COUNT(*) FROM (" +
                         "SELECT f.faculty_id, f.max_hours_per_week, COUNT(t.id) AS assigned " +
-                        "FROM faculty f LEFT JOIN timetable t ON t.faculty_id = f.faculty_id AND t.semester = ? " +
+                        "FROM faculty f LEFT JOIN timetable t ON t.faculty_id = f.faculty_id AND t.semester = CAST(? AS VARCHAR) " +
                         "GROUP BY f.faculty_id, f.max_hours_per_week " +
                         "HAVING COUNT(t.id) > f.max_hours_per_week" +
                         ") x",
