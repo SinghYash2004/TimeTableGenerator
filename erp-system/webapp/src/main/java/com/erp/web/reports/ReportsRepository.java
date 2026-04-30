@@ -25,7 +25,7 @@ public class ReportsRepository {
                 : new Object[]{semester, departmentId, semester, departmentId, semester, departmentId};
 
         String sql =
-                "SELECT 'FACULTY' AS type, d.name AS department_name, t.slot_id, ts.day, ts.period, f.name AS entity_name, COUNT(*) AS cnt " +
+                "SELECT 'FACULTY' AS type, d.name AS department_name, t.slot_id, ts.day AS day, ts.period AS period, f.name AS entity_name, COUNT(*) AS cnt " +
                         "FROM timetable t " +
                         "JOIN faculty f ON f.faculty_id = t.faculty_id " +
                         "JOIN department d ON d.department_id = t.department_id " +

@@ -25,7 +25,7 @@ public class AuditLogService {
 
     public List<AuditLogEntry> recent(int limit) {
         int safeLimit = Math.max(1, Math.min(200, limit));
-        String sql = "SELECT username, action, detail, DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at " +
+        String sql = "SELECT username, action, detail, TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI:SS') AS created_at " +
                 "FROM audit_log ORDER BY audit_id DESC LIMIT ?";
         return jdbcTemplate.query(sql, (rs, i) -> new AuditLogEntry(
                 rs.getString("username"),

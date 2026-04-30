@@ -44,7 +44,7 @@ public class RoomReservationRepository {
         int safeLimit = Math.max(1, Math.min(200, limit));
         String sql =
                 "SELECT c.room_code, c.building, ts.day, ts.period, " +
-                        "DATE_FORMAT(r.reserve_date, '%Y-%m-%d') AS reserve_date, " +
+                        "TO_CHAR(r.reserve_date, 'YYYY-MM-DD') AS reserve_date, " +
                         "r.reservation_type, r.created_by, r.reason " +
                         "FROM room_reservation r " +
                         "JOIN classroom c ON c.room_id = r.room_id " +
