@@ -30,7 +30,7 @@ public class DashboardRepository {
                         "SELECT f.faculty_id, f.max_hours_per_week, COUNT(t.id) AS assigned " +
                         "FROM faculty f LEFT JOIN timetable t ON t.faculty_id = f.faculty_id AND t.semester = ? " +
                         "GROUP BY f.faculty_id, f.max_hours_per_week " +
-                        "HAVING assigned > f.max_hours_per_week" +
+                        "HAVING COUNT(t.id) > f.max_hours_per_week" +
                         ") x",
                 Integer.class,
                 semester
@@ -59,7 +59,7 @@ public class DashboardRepository {
         Integer facultyConflicts = jdbcTemplate.queryForObject(
                 "SELECT COALESCE(SUM(cnt - 1), 0) FROM (" +
                         "SELECT slot_id, faculty_id, COUNT(*) AS cnt FROM timetable WHERE semester = ? " +
-                        "GROUP BY slot_id, faculty_id HAVING cnt > 1" +
+                        "GROUP BY slot_id, faculty_id HAVING COUNT(*) > 1" +
                         ") x",
                 Integer.class,
                 semester
@@ -67,7 +67,7 @@ public class DashboardRepository {
         Integer roomConflicts = jdbcTemplate.queryForObject(
                 "SELECT COALESCE(SUM(cnt - 1), 0) FROM (" +
                         "SELECT slot_id, room_id, COUNT(*) AS cnt FROM timetable WHERE semester = ? " +
-                        "GROUP BY slot_id, room_id HAVING cnt > 1" +
+                        "GROUP BY slot_id, room_id HAVING COUNT(*) > 1" +
                         ") x",
                 Integer.class,
                 semester
@@ -75,7 +75,7 @@ public class DashboardRepository {
         Integer sectionConflicts = jdbcTemplate.queryForObject(
                 "SELECT COALESCE(SUM(cnt - 1), 0) FROM (" +
                         "SELECT slot_id, section_id, COUNT(*) AS cnt FROM timetable WHERE semester = ? " +
-                        "GROUP BY slot_id, section_id HAVING cnt > 1" +
+                        "GROUP BY slot_id, section_id HAVING COUNT(*) > 1" +
                         ") x",
                 Integer.class,
                 semester
