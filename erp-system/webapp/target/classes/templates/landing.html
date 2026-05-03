@@ -46,17 +46,23 @@
 
   <main>
     <section class="hero container" data-scene-step="0">
+      <div class="hero-veil" aria-hidden="true"></div>
       <div class="hero-copy">
         <p class="eyebrow reveal-element">3D timetable intelligence for academic planning</p>
         <h1 class="hero-title">
-          Build perfect timetables in minutes.
+          Build <span>conflict-free</span> timetables in minutes.
         </h1>
         <p class="hero-subtitle reveal-element" data-delay="0.08s">
-          Balance faculty workload, room availability, sections, subjects, and time slots inside a calm visual workspace that turns scheduling chaos into a conflict-free plan.
+          A soothing 3D command center that balances faculty workload, room availability, sections, subjects, and time slots before the schedule reaches your classroom doors.
         </p>
         <div class="hero-actions reveal-element" data-delay="0.16s">
           <a class="btn btn-primary btn-large" href="/login">Launch Dashboard</a>
           <a class="btn btn-secondary btn-large" href="#story">See The Flow</a>
+        </div>
+        <div class="hero-proof reveal-element" data-delay="0.24s" aria-label="Platform highlights">
+          <span><strong>0</strong> published conflicts</span>
+          <span><strong>82%</strong> room utilization</span>
+          <span><strong>3D</strong> planning view</span>
         </div>
       </div>
 
@@ -65,7 +71,7 @@
           <span class="pulse-dot"></span>
           <span id="scenePhase">Live Optimization</span>
         </div>
-        <strong id="sceneTitle">Constraint field is forming</strong>
+        <strong id="sceneTitle">Command preview is warming up</strong>
         <p id="sceneDetails">Rooms, faculty, and subjects are being mapped into a single scheduling space.</p>
         <div class="status-metrics">
           <span><b id="metricConflicts">12</b> conflicts</span>
@@ -123,7 +129,38 @@
       </div>
     </section>
 
-    <section class="section preview container" id="preview" data-scene-step="5">
+    <section class="section product-flow container" id="workflow" data-scene-step="5">
+      <div class="section-header reveal-element">
+        <p class="eyebrow">A calmer planning loop</p>
+        <h2>Generate, inspect, balance, publish.</h2>
+        <p>Every step is designed for administrators who need speed without losing control of the schedule.</p>
+      </div>
+
+      <div class="flow-grid">
+        <article class="flow-card reveal-element">
+          <span>01</span>
+          <h3>Generate</h3>
+          <p>Create a timetable from faculty, rooms, sections, subjects, and time slots.</p>
+        </article>
+        <article class="flow-card reveal-element" data-delay="0.06s">
+          <span>02</span>
+          <h3>Detect</h3>
+          <p>See conflicts, overloads, and weak room matches before publishing.</p>
+        </article>
+        <article class="flow-card reveal-element" data-delay="0.12s">
+          <span>03</span>
+          <h3>Balance</h3>
+          <p>Resolve pressure points with graph-coloring and workload-aware logic.</p>
+        </article>
+        <article class="flow-card reveal-element" data-delay="0.18s">
+          <span>04</span>
+          <h3>Publish</h3>
+          <p>Share a stable schedule that departments can actually trust.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section preview container" id="preview" data-scene-step="6">
       <div class="preview-copy reveal-element">
         <p class="eyebrow">Publication preview</p>
         <h2>From scattered requests to a stable timetable.</h2>
@@ -151,15 +188,22 @@
           <span style="height: 64%"></span>
           <span style="height: 78%"></span>
         </div>
+        <div class="mini-timetable" aria-hidden="true">
+          <span>PHY</span><span>MAT</span><span>LAB</span><span>ENG</span>
+          <span>CS</span><span>AI</span><span>ECO</span><span>HIS</span>
+          <span>CHE</span><span>DS</span><span>ELE</span><span>BIO</span>
+        </div>
       </div>
     </section>
 
-    <section class="cta container" id="cta" data-scene-step="6">
+    <section class="cta container" id="cta" data-scene-step="7">
+      <div class="cta-glow" aria-hidden="true"></div>
       <div class="cta-copy reveal-element">
+        <p class="eyebrow">Ready for the dashboard</p>
         <h2>Give your scheduling team a calmer command center.</h2>
-        <p>Use the dashboard to generate, review, and manage institutional timetables with less back-and-forth.</p>
+        <p>Generate, review, and publish institutional timetables with less back-and-forth and a lot more confidence.</p>
         <div class="hero-actions">
-          <a class="btn btn-primary btn-large" href="/login">Get Started</a>
+          <a class="btn btn-primary btn-large" href="/login">Launch Dashboard</a>
           <a class="btn btn-secondary btn-large" href="/login?mode=signup">Create Account</a>
         </div>
       </div>

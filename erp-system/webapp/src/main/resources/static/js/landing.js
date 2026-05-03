@@ -56,11 +56,12 @@
         const load = document.getElementById('metricLoad');
 
         const steps = [
-            ['Live Optimization', 'Constraint field is forming', 'Rooms, faculty, and subjects are being mapped into a single scheduling space.', '12', '24', '68%'],
+            ['Live Optimization', 'Command preview is warming up', 'Rooms, faculty, and subjects are being mapped into a single scheduling space.', '12', '24', '68%'],
             ['Constraint Intake', 'Every rule becomes visible', 'Availability windows and room capacities separate into readable layers.', '9', '24', '71%'],
             ['Conflict Scan', 'Pressure points are highlighted', 'Overlaps glow before publication so planners can act early.', '5', '24', '76%'],
             ['Graph Coloring', 'The engine is resolving overlaps', 'Class blocks move into compatible time and room positions.', '1', '24', '80%'],
             ['Balanced Plan', 'The final grid is stabilizing', 'Faculty load, classroom use, and section coverage settle into a practical timetable.', '0', '24', '82%'],
+            ['Workflow Ready', 'Generate, inspect, balance, publish', 'The planning loop is arranged into four calm operational steps.', '0', '24', '82%'],
             ['Publication Ready', 'The timetable is ready to review', 'A clean schedule can now be inspected, adjusted, and shared.', '0', '24', '82%'],
             ['Dashboard Launch', 'Your command center is ready', 'Move from the visual story into the working application.', '0', '24', '82%']
         ];
@@ -126,6 +127,7 @@
         const network = new THREE.Group();
         const conflicts = [];
         const blocks = [];
+        const classCards = [];
         const panels = [];
         scene.add(root);
         root.add(schedule);
@@ -249,33 +251,58 @@
                 }
             }
 
+            [
+                ['Physics', 'Room 301', '9:00 AM', colors.mint, 0, 0],
+                ['Mathematics', 'Room 201', '10:00 AM', colors.blue, 1, 0],
+                ['English', 'Room 118', '11:00 AM', colors.coral, 2, 0],
+                ['CS Lab', 'Lab 4', '1:00 PM', colors.lavender, 0, 1],
+                ['Chemistry', 'Lab 2', '2:00 PM', colors.amber, 1, 1],
+                ['Economics', 'Room 108', '3:00 PM', colors.teal, 2, 1]
+            ].forEach((item, index) => {
+                const card = createTimetableCard(item[0], item[1], item[2], item[3], index === 2);
+                card.position.set(-2.2 + item[4] * 2.15, 1.04, -0.78 + item[5] * 1.08);
+                card.userData = {
+                    title: `${item[0]} - ${item[1]}`,
+                    details: index === 2 ? 'This class is marked as a soft conflict before the optimizer resolves it.' : `${item[2]} placement is available for review.`,
+                    step: index === 2 ? 2 : 5
+                };
+                schedule.add(card);
+                classCards.push(card);
+            });
+
             schedule.rotation.set(-0.62, 0, -0.52);
             schedule.position.set(1.7, 0.2, 0);
         }
 
         function createNetworkModel() {
-            const nodeGeometry = new THREE.SphereGeometry(0.11, 20, 20);
+            const nodeGeometry = new THREE.SphereGeometry(0.08, 18, 18);
             const nodeMaterial = new THREE.MeshPhysicalMaterial({
                 color: colors.white,
                 emissive: colors.teal,
-                emissiveIntensity: 0.22,
+                emissiveIntensity: 0.12,
                 roughness: 0.25,
-                metalness: 0.05
+                metalness: 0.05,
+                transparent: true,
+                opacity: 0.22,
+                depthWrite: false
             });
             const conflictMaterial = new THREE.MeshPhysicalMaterial({
                 color: colors.coral,
                 emissive: colors.coral,
-                emissiveIntensity: 0.75,
-                roughness: 0.24
+                emissiveIntensity: 0.36,
+                roughness: 0.24,
+                transparent: true,
+                opacity: 0.26,
+                depthWrite: false
             });
 
             const nodes = [];
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 22; i++) {
                 const radius = 2.2 + Math.random() * 2.4;
-                const angle = (i / 30) * Math.PI * 2;
+                const angle = (i / 22) * Math.PI * 2;
                 const y = -1.6 + Math.random() * 3.6;
                 const node = new THREE.Mesh(nodeGeometry, i % 7 === 0 ? conflictMaterial.clone() : nodeMaterial.clone());
-                node.position.set(Math.cos(angle) * radius - 1.1, y, Math.sin(angle) * radius - 0.7);
+                node.position.set(Math.cos(angle) * radius - 1.1, y, Math.sin(angle) * radius - 2.4);
                 node.userData = {
                     title: i % 7 === 0 ? 'Conflict hotspot' : 'Constraint node',
                     details: i % 7 === 0 ? 'This overlap is being separated by the optimizer.' : 'A timetable rule connected to room, faculty, or subject data.',
@@ -290,7 +317,8 @@
             const lineMaterial = new THREE.LineBasicMaterial({
                 color: colors.mint,
                 transparent: true,
-                opacity: 0.12
+                opacity: 0.06,
+                depthWrite: false
             });
 
             for (let i = 0; i < nodes.length - 1; i++) {
@@ -300,7 +328,69 @@
                 network.add(line);
             }
 
-            network.position.set(-2.6, 0.4, -1.2);
+            network.position.set(-2.6, 0.4, -1.7);
+        }
+
+        function createTimetableCard(subject, room, time, accent, isConflict) {
+            const textureCanvas = document.createElement('canvas');
+            textureCanvas.width = 512;
+            textureCanvas.height = 256;
+            const ctx = textureCanvas.getContext('2d');
+            const accentHex = `#${accent.toString(16).padStart(6, '0')}`;
+
+            ctx.clearRect(0, 0, textureCanvas.width, textureCanvas.height);
+            ctx.fillStyle = isConflict ? 'rgba(72, 22, 22, 0.86)' : 'rgba(7, 17, 24, 0.88)';
+            roundRect(ctx, 18, 18, 476, 220, 30);
+            ctx.fill();
+            ctx.strokeStyle = isConflict ? 'rgba(255, 159, 139, 0.80)' : accentHex;
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
+            ctx.fillStyle = '#f7fbfa';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = '800 42px Inter, Arial, sans-serif';
+            ctx.fillText(subject, 256, 82);
+
+            ctx.fillStyle = isConflict ? '#ffb5a5' : '#c8fff2';
+            ctx.font = '700 28px Inter, Arial, sans-serif';
+            ctx.fillText(room, 256, 136);
+
+            ctx.fillStyle = 'rgba(247, 251, 250, 0.78)';
+            ctx.font = '700 24px Inter, Arial, sans-serif';
+            ctx.fillText(isConflict ? `${time}  CONFLICT` : time, 256, 184);
+
+            const texture = new THREE.CanvasTexture(textureCanvas);
+            if ('colorSpace' in texture && THREE.SRGBColorSpace) {
+                texture.colorSpace = THREE.SRGBColorSpace;
+            }
+            texture.anisotropy = 4;
+
+            const card = new THREE.Mesh(
+                new THREE.PlaneGeometry(1.5, 0.72),
+                new THREE.MeshBasicMaterial({
+                    map: texture,
+                    transparent: true,
+                    depthWrite: false
+                })
+            );
+            card.rotation.x = -Math.PI / 2;
+            card.renderOrder = 12;
+            return card;
+        }
+
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
         }
 
         function createFieldLines() {
@@ -378,7 +468,7 @@
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
-            const hits = raycaster.intersectObjects([...blocks, ...panels, ...conflicts], false);
+            const hits = raycaster.intersectObjects([...classCards, ...blocks, ...panels, ...conflicts], false);
             if (!hits.length) return;
 
             activeObject = hits[0].object;
@@ -444,6 +534,14 @@
                 const scale = 1 + selected * 0.28 + Math.sin(time * 2 + index) * 0.015;
                 block.scale.set(scale, scale, scale);
                 block.material.emissiveIntensity = 0.08 + selected * 0.45 + stage * 0.02;
+            });
+
+            classCards.forEach((card, index) => {
+                const selected = activeObject === card ? 1 : 0;
+                const hoverLift = Math.sin(time * 1.2 + index) * 0.018;
+                card.position.y = 1.04 + hoverLift + selected * 0.08;
+                const scale = 1 + selected * 0.10 + Math.sin(time + index) * 0.01;
+                card.scale.set(scale, scale, scale);
             });
 
             conflicts.forEach((node, index) => {
