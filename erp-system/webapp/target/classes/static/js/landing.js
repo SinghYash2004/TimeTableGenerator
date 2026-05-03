@@ -105,8 +105,9 @@
         }
 
         const THREE = window.THREE;
+        const viewport = canvas.parentElement || canvas;
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x071014, 0.035);
+        scene.fog = new THREE.FogExp2(0x0a0e1a, 0.035);
 
         const renderer = new THREE.WebGLRenderer({
             canvas,
@@ -114,11 +115,11 @@
             alpha: true,
             powerPreference: 'high-performance'
         });
-        renderer.setClearColor(0x071014, 0);
+        renderer.setClearColor(0x0a0e1a, 0);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.8));
-        renderer.setSize(window.innerWidth, window.innerHeight);
 
-        const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 100);
+        const initialSize = getViewportSize();
+        const camera = new THREE.PerspectiveCamera(42, initialSize.width / initialSize.height, 0.1, 100);
         camera.position.set(0, 2.8, 10);
 
         const root = new THREE.Group();
@@ -148,6 +149,21 @@
             amber: 0xf8d36f,
             white: 0xf7fbfa
         };
+
+        const timetableLabels = [
+            'Physics · Room 301 · 9AM',
+            'Math · Room 201 · 10AM',
+            'English · 11AM ⚡ Conflict',
+            'Chemistry · Lab 2 · 12PM',
+            'CS · Room 402 · 2PM',
+            'Biology · Lab 1 · 1PM',
+            'Economics · Room 108 · 3PM',
+            'History · Room 204 · 4PM',
+            'AI Lab · Lab 4 · 2PM',
+            'Design · Studio 1 · 1PM',
+            'Data Structures · Room 305 · 4PM',
+            'Electronics · Lab 3 · 10AM'
+        ];
 
         scene.add(new THREE.AmbientLight(0xbfded8, 1.4));
 
@@ -191,7 +207,7 @@
 
             for (let i = 0; i < 3; i++) {
                 const panel = new THREE.Mesh(
-                    new THREE.BoxGeometry(6.8, 0.055, 3.9),
+                    new THREE.BoxGeometry(7.2, 0.055, 4.15),
                     glassMaterials[i]
                 );
                 panel.position.y = i * 0.38;
@@ -211,7 +227,7 @@
                 panel.add(edge);
             }
 
-            const blockGeometry = new THREE.BoxGeometry(0.52, 0.18, 0.44);
+            const blockGeometry = new THREE.BoxGeometry(0.82, 0.2, 0.56);
             const palette = [colors.mint, colors.blue, colors.lavender, colors.teal, colors.amber];
 
             for (let layer = 0; layer < 3; layer++) {
@@ -220,29 +236,35 @@
                         const slot = row * 6 + col;
                         if ((slot + layer) % 5 === 0) continue;
 
+                        const color = palette[(row + col + layer) % palette.length];
+                        const labelText = timetableLabels[(layer * 24 + slot) % timetableLabels.length];
+                        const hasConflict = labelText.includes('Conflict');
+
                         const material = new THREE.MeshPhysicalMaterial({
-                            color: palette[(row + col + layer) % palette.length],
+                            color,
                             roughness: 0.36,
                             metalness: 0.08,
                             transmission: 0.18,
                             transparent: true,
-                            opacity: 0.82,
-                            emissive: palette[(row + col + layer) % palette.length],
-                            emissiveIntensity: 0.07
+                            opacity: 0.88,
+                            emissive: hasConflict ? colors.coral : color,
+                            emissiveIntensity: hasConflict ? 0.18 : 0.08
                         });
 
                         const block = new THREE.Mesh(blockGeometry, material);
-                        block.position.set(-2.7 + col * 1.08, layer * 0.38 + 0.14, -1.28 + row * 0.82);
+                        block.position.set(-2.85 + col * 1.14, layer * 0.38 + 0.14, -1.32 + row * 0.86);
                         block.rotation.y = (Math.random() - 0.5) * 0.12;
                         block.userData = {
                             base: block.position.clone(),
                             layer,
                             row,
                             col,
-                            title: `${['Room', 'Subject', 'Faculty'][layer]} block ${row + 1}-${col + 1}`,
+                            labelText,
+                            title: labelText,
                             details: 'Selected timetable slot is checked against availability, capacity, and workload.',
                             step: 3 + layer
                         };
+                        block.add(createBlockLabel(labelText, hasConflict));
                         schedule.add(block);
                         blocks.push(block);
                     }
@@ -250,23 +272,29 @@
             }
 
             schedule.rotation.set(-0.62, 0, -0.52);
-            schedule.position.set(1.7, 0.2, 0);
+            schedule.position.set(0.45, 0.2, 0);
         }
 
         function createNetworkModel() {
-            const nodeGeometry = new THREE.SphereGeometry(0.11, 20, 20);
+            const nodeGeometry = new THREE.SphereGeometry(0.066, 16, 16);
             const nodeMaterial = new THREE.MeshPhysicalMaterial({
                 color: colors.white,
                 emissive: colors.teal,
-                emissiveIntensity: 0.22,
+                emissiveIntensity: 0.08,
                 roughness: 0.25,
-                metalness: 0.05
+                metalness: 0.05,
+                transparent: true,
+                opacity: 0.15,
+                depthWrite: false
             });
             const conflictMaterial = new THREE.MeshPhysicalMaterial({
                 color: colors.coral,
                 emissive: colors.coral,
-                emissiveIntensity: 0.75,
-                roughness: 0.24
+                emissiveIntensity: 0.18,
+                roughness: 0.24,
+                transparent: true,
+                opacity: 0.15,
+                depthWrite: false
             });
 
             const nodes = [];
@@ -276,6 +304,7 @@
                 const y = -1.6 + Math.random() * 3.6;
                 const node = new THREE.Mesh(nodeGeometry, i % 7 === 0 ? conflictMaterial.clone() : nodeMaterial.clone());
                 node.position.set(Math.cos(angle) * radius - 1.1, y, Math.sin(angle) * radius - 0.7);
+                node.renderOrder = -10;
                 node.userData = {
                     title: i % 7 === 0 ? 'Conflict hotspot' : 'Constraint node',
                     details: i % 7 === 0 ? 'This overlap is being separated by the optimizer.' : 'A timetable rule connected to room, faculty, or subject data.',
@@ -290,7 +319,8 @@
             const lineMaterial = new THREE.LineBasicMaterial({
                 color: colors.mint,
                 transparent: true,
-                opacity: 0.12
+                opacity: 0.045,
+                depthWrite: false
             });
 
             for (let i = 0; i < nodes.length - 1; i++) {
@@ -300,7 +330,81 @@
                 network.add(line);
             }
 
-            network.position.set(-2.6, 0.4, -1.2);
+            network.position.set(-1.55, 0.15, -4.4);
+            network.scale.setScalar(0.62);
+        }
+
+        function createBlockLabel(text, hasConflict) {
+            const labelCanvas = document.createElement('canvas');
+            labelCanvas.width = 512;
+            labelCanvas.height = 256;
+            const ctx = labelCanvas.getContext('2d');
+            const fill = hasConflict ? '#ffdfd5' : '#ffffff';
+            const stroke = hasConflict ? 'rgba(255, 159, 139, 0.86)' : 'rgba(255, 255, 255, 0.32)';
+            const bg = hasConflict ? 'rgba(72, 17, 18, 0.62)' : 'rgba(6, 12, 20, 0.58)';
+
+            ctx.clearRect(0, 0, labelCanvas.width, labelCanvas.height);
+            drawRoundRect(ctx, 20, 26, 472, 204, 28, bg, stroke);
+
+            const parts = text.split(' · ');
+            const title = parts[0] || text;
+            const detail = parts.slice(1).join(' · ');
+
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = fill;
+            setFittedFont(ctx, title, 396, 38, 25);
+            ctx.fillText(title, 256, detail ? 96 : 128);
+
+            if (detail) {
+                ctx.fillStyle = hasConflict ? '#ffb29f' : '#dffcf4';
+                setFittedFont(ctx, detail, 420, 31, 21);
+                ctx.fillText(detail, 256, 152);
+            }
+
+            const texture = new THREE.CanvasTexture(labelCanvas);
+            if ('colorSpace' in texture && THREE.SRGBColorSpace) {
+                texture.colorSpace = THREE.SRGBColorSpace;
+            }
+            texture.anisotropy = 4;
+
+            const material = new THREE.MeshBasicMaterial({
+                map: texture,
+                transparent: true,
+                depthWrite: false
+            });
+            const label = new THREE.Mesh(new THREE.PlaneGeometry(0.78, 0.39), material);
+            label.rotation.x = -Math.PI / 2;
+            label.position.y = 0.106;
+            label.renderOrder = 20;
+            return label;
+        }
+
+        function drawRoundRect(ctx, x, y, width, height, radius, fill, stroke) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+            ctx.fillStyle = fill;
+            ctx.fill();
+            ctx.strokeStyle = stroke;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+        }
+
+        function setFittedFont(ctx, text, maxWidth, startSize, minSize) {
+            let size = startSize;
+            do {
+                ctx.font = `800 ${size}px Inter, Arial, sans-serif`;
+                size -= 1;
+            } while (ctx.measureText(text).width > maxWidth && size >= minSize);
         }
 
         function createFieldLines() {
@@ -344,11 +448,18 @@
         }
 
         function resize() {
-            const width = window.innerWidth;
-            const height = window.innerHeight;
+            const { width, height } = getViewportSize();
             camera.aspect = width / height;
             camera.updateProjectionMatrix();
-            renderer.setSize(width, height);
+            renderer.setSize(width, height, false);
+        }
+
+        function getViewportSize() {
+            const rect = viewport.getBoundingClientRect();
+            return {
+                width: Math.max(1, Math.floor(rect.width || window.innerWidth * 0.5)),
+                height: Math.max(1, Math.floor(rect.height || window.innerHeight))
+            };
         }
 
         function updateScroll() {
@@ -370,14 +481,15 @@
         }
 
         function onPointerMove(event) {
-            pointerTarget.x = (event.clientX / window.innerWidth) * 2 - 1;
-            pointerTarget.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            const pointer = getCanvasPointer(event, true);
+            pointerTarget.x = pointer.x;
+            pointerTarget.y = pointer.y;
         }
 
         function onClick(event) {
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-            raycaster.setFromCamera(mouse, camera);
+            const pointer = getCanvasPointer(event, false);
+            if (!pointer) return;
+            raycaster.setFromCamera(pointer, camera);
             const hits = raycaster.intersectObjects([...blocks, ...panels, ...conflicts], false);
             if (!hits.length) return;
 
@@ -387,6 +499,18 @@
             const sceneDetails = document.getElementById('sceneDetails');
             if (sceneTitle) sceneTitle.textContent = activeObject.userData.title;
             if (sceneDetails) sceneDetails.textContent = activeObject.userData.details;
+        }
+
+        function getCanvasPointer(event, clampToBounds) {
+            const rect = canvas.getBoundingClientRect();
+            const rawX = (event.clientX - rect.left) / rect.width;
+            const rawY = (event.clientY - rect.top) / rect.height;
+            if (!clampToBounds && (rawX < 0 || rawX > 1 || rawY < 0 || rawY > 1)) {
+                return null;
+            }
+            const normalizedX = clampToBounds ? Math.min(1, Math.max(0, rawX)) : rawX;
+            const normalizedY = clampToBounds ? Math.min(1, Math.max(0, rawY)) : rawY;
+            return new THREE.Vector2(normalizedX * 2 - 1, -(normalizedY * 2 - 1));
         }
 
         function renderStill() {
@@ -415,13 +539,13 @@
             root.rotation.x = -0.04 + mouse.y * 0.08;
             root.position.y = -0.2 + Math.sin(time * 0.7) * 0.05 - progress * 0.18;
 
-            schedule.position.x = 1.5 - progress * 2.4;
+            schedule.position.x = 0.45 - progress * 0.8;
             schedule.position.y = 0.22 + Math.sin(time * 0.8) * 0.05;
             schedule.rotation.x = -0.62 + progress * 0.34;
             schedule.rotation.z = -0.52 + progress * 0.3;
             schedule.rotation.y = 0.16 + mouse.x * 0.12;
 
-            network.position.x = -2.8 + progress * 1.1;
+            network.position.x = -1.55 + progress * 0.55;
             network.rotation.y = time * 0.08 + mouse.x * 0.08;
             network.rotation.x = mouse.y * 0.05;
 
@@ -452,11 +576,12 @@
                 node.scale.set(scale, scale, scale);
                 node.material.color.setHex(resolved > 0.8 ? colors.mint : colors.coral);
                 node.material.emissive.setHex(resolved > 0.8 ? colors.mint : colors.coral);
-                node.material.emissiveIntensity = resolved > 0.8 ? 0.35 : 0.9 * conflictFade;
+                node.material.opacity = 0.15;
+                node.material.emissiveIntensity = resolved > 0.8 ? 0.12 : 0.18 * conflictFade;
             });
 
-            camera.position.x = mouse.x * 0.6;
-            camera.position.y = 2.5 + mouse.y * 0.32 - progress * 0.25;
+            camera.position.x = mouse.x * 0.32;
+            camera.position.y = 2.5 + mouse.y * 0.22 - progress * 0.25;
             camera.position.z = 10 - progress * 1.7;
             camera.lookAt(0, 0, 0);
         }
