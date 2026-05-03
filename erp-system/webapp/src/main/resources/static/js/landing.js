@@ -243,7 +243,10 @@
         const conflicts = [];
         const blocks = [];
         const classCards = [];
+        const connectionLines = [];
+        const ambientNodes = [];
         const panels = [];
+        let scanBeam = null;
         scene.add(root);
         root.add(schedule);
         root.add(network);
@@ -265,6 +268,12 @@
             amber: 0xf8d36f,
             white: 0xf7fbfa
         };
+
+        const compactSubjects = [
+            'PHY', 'MATH', 'ENG', 'CS', 'CHEM', 'BIO',
+            'AI', 'DSA', 'ECO', 'HIS', 'LAB', 'ELEC',
+            'STAT', 'DBMS', 'OS', 'NET', 'ML', 'SE'
+        ];
 
         scene.add(new THREE.AmbientLight(0xbfded8, 1.4));
 
@@ -351,15 +360,20 @@
                         const block = new THREE.Mesh(blockGeometry, material);
                         block.position.set(-2.7 + col * 1.08, layer * 0.38 + 0.14, -1.28 + row * 0.82);
                         block.rotation.y = (Math.random() - 0.5) * 0.12;
+                        const subject = compactSubjects[(layer * 24 + slot) % compactSubjects.length];
+                        const timeLabel = `${9 + (col % 6)}${col < 3 ? 'A' : 'P'}`;
                         block.userData = {
                             base: block.position.clone(),
                             layer,
                             row,
                             col,
-                            title: `${['Room', 'Subject', 'Faculty'][layer]} block ${row + 1}-${col + 1}`,
-                            details: 'Selected timetable slot is checked against availability, capacity, and workload.',
+                            subject,
+                            timeLabel,
+                            title: `${subject} · ${timeLabel} · Layer ${layer + 1}`,
+                            details: 'Labeled timetable block checked against availability, capacity, and workload.',
                             step: 3 + layer
                         };
+                        block.add(createCompactBlockLabel(subject, timeLabel, palette[(row + col + layer) % palette.length]));
                         schedule.add(block);
                         blocks.push(block);
                     }
@@ -384,6 +398,9 @@
                 schedule.add(card);
                 classCards.push(card);
             });
+
+            createScheduleConnections();
+            createScanBeam();
 
             schedule.rotation.set(-0.62, 0, -0.52);
             schedule.position.set(1.7, 0.2, 0);
@@ -422,9 +439,12 @@
                     title: i % 7 === 0 ? 'Conflict hotspot' : 'Constraint node',
                     details: i % 7 === 0 ? 'This overlap is being separated by the optimizer.' : 'A timetable rule connected to room, faculty, or subject data.',
                     step: i % 7 === 0 ? 2 : 1,
-                    baseScale: 1
+                    baseScale: 1,
+                    base: node.position.clone(),
+                    phase: i * 0.37
                 };
                 network.add(node);
+                ambientNodes.push(node);
                 nodes.push(node);
                 if (i % 7 === 0) conflicts.push(node);
             }
@@ -492,6 +512,92 @@
             card.rotation.x = -Math.PI / 2;
             card.renderOrder = 12;
             return card;
+        }
+
+        function createCompactBlockLabel(subject, time, accent) {
+            const labelCanvas = document.createElement('canvas');
+            labelCanvas.width = 256;
+            labelCanvas.height = 128;
+            const ctx = labelCanvas.getContext('2d');
+            const accentHex = `#${accent.toString(16).padStart(6, '0')}`;
+
+            ctx.clearRect(0, 0, labelCanvas.width, labelCanvas.height);
+            ctx.fillStyle = 'rgba(5, 12, 18, 0.70)';
+            roundRect(ctx, 12, 12, 232, 104, 18);
+            ctx.fill();
+            ctx.strokeStyle = accentHex;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#f7fbfa';
+            ctx.font = '800 40px Inter, Arial, sans-serif';
+            ctx.fillText(subject, 128, 52);
+            ctx.fillStyle = 'rgba(247, 251, 250, 0.72)';
+            ctx.font = '700 24px Inter, Arial, sans-serif';
+            ctx.fillText(time, 128, 88);
+
+            const texture = new THREE.CanvasTexture(labelCanvas);
+            if ('colorSpace' in texture && THREE.SRGBColorSpace) {
+                texture.colorSpace = THREE.SRGBColorSpace;
+            }
+            texture.anisotropy = 2;
+
+            const label = new THREE.Mesh(
+                new THREE.PlaneGeometry(0.46, 0.25),
+                new THREE.MeshBasicMaterial({
+                    map: texture,
+                    transparent: true,
+                    depthWrite: false
+                })
+            );
+            label.rotation.x = -Math.PI / 2;
+            label.position.y = 0.096;
+            label.renderOrder = 14;
+            return label;
+        }
+
+        function createScheduleConnections() {
+            const lineMaterial = new THREE.LineBasicMaterial({
+                color: colors.mint,
+                transparent: true,
+                opacity: 0.16,
+                depthWrite: false
+            });
+
+            const routes = [
+                [new THREE.Vector3(-2.2, 1.08, -0.78), new THREE.Vector3(0.0, 1.08, -0.78), new THREE.Vector3(2.1, 1.08, -0.78)],
+                [new THREE.Vector3(-2.2, 1.08, 0.30), new THREE.Vector3(0.0, 1.08, 0.30), new THREE.Vector3(2.1, 1.08, 0.30)],
+                [new THREE.Vector3(-2.72, 0.56, -1.28), new THREE.Vector3(-0.56, 0.88, -0.46), new THREE.Vector3(1.6, 1.04, 0.30)],
+                [new THREE.Vector3(2.70, 0.18, 1.18), new THREE.Vector3(0.55, 0.70, 0.36), new THREE.Vector3(-1.6, 1.04, -0.78)]
+            ];
+
+            routes.forEach((points, index) => {
+                const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), lineMaterial.clone());
+                line.userData = {
+                    phase: index * 0.7,
+                    baseOpacity: index < 2 ? 0.18 : 0.12
+                };
+                line.renderOrder = 11;
+                schedule.add(line);
+                connectionLines.push(line);
+            });
+        }
+
+        function createScanBeam() {
+            scanBeam = new THREE.Mesh(
+                new THREE.BoxGeometry(6.4, 0.012, 0.06),
+                new THREE.MeshBasicMaterial({
+                    color: colors.mint,
+                    transparent: true,
+                    opacity: 0.34,
+                    depthWrite: false
+                })
+            );
+            scanBeam.position.set(0, 1.15, -1.65);
+            scanBeam.renderOrder = 13;
+            schedule.add(scanBeam);
         }
 
         function roundRect(ctx, x, y, width, height, radius) {
@@ -611,28 +717,29 @@
 
         function applySceneState(progress) {
             const time = frame * 0.012;
+            const ambient = frame * 0.006;
             const stage = activeStep / 9;
             const conflictFade = Math.max(0, 1 - progress * 2.6);
             const resolved = Math.min(1, Math.max(0, progress * 2.2 - 0.65));
             const panelSpread = 1.15 - Math.min(1, progress * 1.65) * 0.95;
 
-            root.rotation.y = -0.16 + mouse.x * 0.12 + progress * 0.35;
-            root.rotation.x = -0.04 + mouse.y * 0.08;
-            root.position.y = -0.2 + Math.sin(time * 0.7) * 0.05 - progress * 0.18;
+            root.rotation.y = -0.16 + Math.sin(ambient * 0.75) * 0.08 + mouse.x * 0.12 + progress * 0.35;
+            root.rotation.x = -0.04 + Math.cos(ambient * 0.55) * 0.025 + mouse.y * 0.08;
+            root.position.y = -0.2 + Math.sin(time * 0.7) * 0.05 + Math.sin(ambient) * 0.045 - progress * 0.18;
 
             schedule.position.x = 1.5 - progress * 2.4;
-            schedule.position.y = 0.22 + Math.sin(time * 0.8) * 0.05;
+            schedule.position.y = 0.22 + Math.sin(time * 0.8) * 0.05 + Math.cos(ambient * 0.9) * 0.035;
             schedule.rotation.x = -0.62 + progress * 0.34;
-            schedule.rotation.z = -0.52 + progress * 0.3;
-            schedule.rotation.y = 0.16 + mouse.x * 0.12;
+            schedule.rotation.z = -0.52 + Math.sin(ambient * 0.48) * 0.035 + progress * 0.3;
+            schedule.rotation.y = 0.16 + Math.cos(ambient * 0.62) * 0.055 + mouse.x * 0.12;
 
             network.position.x = -2.8 + progress * 1.1;
-            network.rotation.y = time * 0.08 + mouse.x * 0.08;
-            network.rotation.x = mouse.y * 0.05;
+            network.rotation.y = time * 0.08 + Math.sin(ambient * 0.7) * 0.10 + mouse.x * 0.08;
+            network.rotation.x = Math.cos(ambient * 0.8) * 0.04 + mouse.y * 0.05;
 
             panels.forEach((panel, index) => {
                 panel.position.y = index * panelSpread;
-                panel.material.opacity = 0.11 + index * 0.025 + progress * 0.02;
+                panel.material.opacity = 0.11 + index * 0.025 + progress * 0.02 + Math.sin(ambient * 1.2 + index) * 0.012;
             });
 
             blocks.forEach((block, index) => {
@@ -640,23 +747,42 @@
                 const laneShift = Math.sin(index * 1.7) * (1 - resolved) * 0.42;
                 const settleX = (block.userData.col - 2.5) * 0.03 * resolved;
                 const settleZ = (block.userData.row - 1.5) * 0.03 * resolved;
-                block.position.x = base.x + laneShift + settleX;
-                block.position.y = base.y + Math.sin(time + index) * 0.018 * (1 - progress * 0.6);
+                const ambientSlide = Math.sin(ambient * 1.2 + index * 0.37) * 0.035;
+                block.position.x = base.x + laneShift + settleX + ambientSlide;
+                block.position.y = base.y + Math.sin(time + index) * 0.018 * (1 - progress * 0.6) + Math.cos(ambient + index) * 0.012;
                 block.position.z = base.z + Math.cos(time * 0.8 + index) * 0.025 + settleZ;
-                block.rotation.y = Math.sin(time * 0.7 + index) * 0.04 * (1 - resolved);
+                block.rotation.y = Math.sin(time * 0.7 + index) * 0.04 * (1 - resolved) + Math.sin(ambient * 0.7 + index) * 0.015;
 
                 const selected = activeObject === block ? 1 : 0;
                 const scale = 1 + selected * 0.28 + Math.sin(time * 2 + index) * 0.015;
                 block.scale.set(scale, scale, scale);
-                block.material.emissiveIntensity = 0.08 + selected * 0.45 + stage * 0.02;
+                block.material.emissiveIntensity = 0.08 + selected * 0.45 + stage * 0.02 + Math.max(0, Math.sin(ambient * 1.4 + index)) * 0.035;
             });
 
             classCards.forEach((card, index) => {
                 const selected = activeObject === card ? 1 : 0;
-                const hoverLift = Math.sin(time * 1.2 + index) * 0.018;
+                const hoverLift = Math.sin(time * 1.2 + index) * 0.018 + Math.cos(ambient * 1.1 + index) * 0.025;
                 card.position.y = 1.04 + hoverLift + selected * 0.08;
-                const scale = 1 + selected * 0.10 + Math.sin(time + index) * 0.01;
+                const scale = 1 + selected * 0.10 + Math.sin(time + index) * 0.01 + Math.max(0, Math.sin(ambient * 0.9 + index)) * 0.015;
                 card.scale.set(scale, scale, scale);
+            });
+
+            connectionLines.forEach((line, index) => {
+                const glow = Math.max(0, Math.sin(ambient * 2.2 + line.userData.phase));
+                line.material.opacity = line.userData.baseOpacity + glow * 0.16 + stage * 0.02;
+            });
+
+            if (scanBeam) {
+                const scan = (Math.sin(ambient * 1.35) + 1) / 2;
+                scanBeam.position.z = -1.65 + scan * 3.30;
+                scanBeam.material.opacity = Math.max(0.04, 0.12 + Math.sin(ambient * 1.35 + Math.PI / 2) * 0.18);
+            }
+
+            ambientNodes.forEach((node, index) => {
+                const base = node.userData.base;
+                node.position.x = base.x + Math.sin(ambient * 1.1 + node.userData.phase) * 0.09;
+                node.position.y = base.y + Math.cos(ambient * 0.9 + node.userData.phase) * 0.07;
+                node.position.z = base.z + Math.sin(ambient * 0.75 + index) * 0.08;
             });
 
             conflicts.forEach((node, index) => {
@@ -668,9 +794,9 @@
                 node.material.emissiveIntensity = resolved > 0.8 ? 0.35 : 0.9 * conflictFade;
             });
 
-            camera.position.x = mouse.x * 0.6;
-            camera.position.y = 2.5 + mouse.y * 0.32 - progress * 0.25;
-            camera.position.z = 10 - progress * 1.7;
+            camera.position.x = mouse.x * 0.6 + Math.sin(ambient * 0.52) * 0.22;
+            camera.position.y = 2.5 + mouse.y * 0.32 + Math.cos(ambient * 0.46) * 0.12 - progress * 0.25;
+            camera.position.z = 10 + Math.sin(ambient * 0.38) * 0.20 - progress * 1.7;
             camera.lookAt(0, 0, 0);
         }
     }
