@@ -372,7 +372,7 @@ body::before {
     position: fixed;
     inset: 0;
     pointer-events: none;
-    z-index: -1;
+    z-index: 0;
     background-image: linear-gradient(rgba(184, 204, 240, 0.055) 1px, transparent 1px),
     linear-gradient(90deg, rgba(184, 204, 240, 0.055) 1px, transparent 1px);
     background-size: 46px 46px;
@@ -384,7 +384,7 @@ body::after {
     position: fixed;
     inset: 0;
     pointer-events: none;
-    z-index: -1;
+    z-index: 0;
     background: var(--vignette);
 }
 
@@ -492,6 +492,7 @@ body::after {
     height: 100vh;
     transition: grid-template-columns 280ms cubic-bezier(.22,.61,.36,1);
     position: relative;
+    z-index: 1;
 }
 
 .app-shell.sidebar-collapsed {
@@ -1463,8 +1464,9 @@ input:focus, select:focus {
     position: fixed;
     inset: 0;
     pointer-events: none;
-    z-index: -1;
+    z-index: 0;
     overflow: hidden;
+    background: var(--bg);
 }
 
 .experience-page .mesh-layer,
