@@ -421,20 +421,23 @@ body.no-webgl #timetableScene {
   display: grid;
   gap: 22px;
   padding: 82px 0 120px;
-  --timeline-progress: 0%;
-  --timeline-sweep: 0%;
+  --timeline-start: 112px;
+  --timeline-height: 0px;
+  --timeline-progress: 0px;
+  --timeline-sweep: 0px;
+  --timeline-x: 50%;
 }
 
 .story-line {
   position: absolute;
-  top: 112px;
-  bottom: 138px;
-  left: 50%;
+  top: var(--timeline-start);
+  left: var(--timeline-x);
   width: 2px;
+  height: var(--timeline-height);
   transform: translateX(-50%);
   pointer-events: none;
   border-radius: 999px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .story-line-base,
@@ -446,10 +449,12 @@ body.no-webgl #timetableScene {
 }
 
 .story-line-base {
+  overflow: hidden;
   background: rgba(247, 251, 250, 0.11);
 }
 
 .story-line-progress {
+  overflow: hidden;
   bottom: auto;
   height: var(--timeline-progress);
   background: linear-gradient(180deg, rgba(132, 220, 198, 0.20), rgba(132, 220, 198, 0.85), rgba(183, 164, 255, 0.62));
@@ -458,11 +463,12 @@ body.no-webgl #timetableScene {
 
 .story-line-sweep {
   bottom: auto;
-  height: 110px;
-  top: clamp(0%, var(--timeline-sweep), calc(100% - 110px));
+  height: 118px;
+  top: var(--timeline-sweep);
   background: linear-gradient(180deg, transparent, rgba(29, 235, 160, 0.95), transparent);
   filter: blur(1px);
   opacity: 0;
+  transform: translateY(-50%);
 }
 
 .story.is-traveling .story-line-sweep {
@@ -471,9 +477,9 @@ body.no-webgl #timetableScene {
 }
 
 @keyframes timeline-spark {
-  0% { opacity: 0; transform: translateY(-26px) scaleY(0.78); }
+  0% { opacity: 0; transform: translateY(calc(-50% - 26px)) scaleY(0.78); }
   35% { opacity: 1; }
-  100% { opacity: 0; transform: translateY(34px) scaleY(1.08); }
+  100% { opacity: 0; transform: translateY(calc(-50% + 34px)) scaleY(1.08); }
 }
 
 .story-phase {
@@ -535,6 +541,7 @@ body.no-webgl #timetableScene {
   z-index: 2;
   grid-column: 2;
   justify-self: center;
+  align-self: center;
   width: 18px;
   height: 18px;
   border: 1px solid rgba(132, 220, 198, 0.58);
@@ -568,7 +575,7 @@ body.no-webgl #timetableScene {
 }
 
 .story-phase.is-active .phase-dot {
-  transform: scale(1.25);
+  transform: scale(1.18);
   border-color: rgba(29, 235, 160, 0.95);
   background: #1deba0;
   box-shadow: 0 0 0 10px rgba(29, 235, 160, 0.08), 0 0 34px rgba(29, 235, 160, 0.58);
@@ -954,9 +961,7 @@ body.reduced-motion *::after {
   }
 
   .story-line {
-    top: 88px;
-    bottom: 108px;
-    left: 22px;
+    left: var(--timeline-x);
   }
 
   .story-phase {

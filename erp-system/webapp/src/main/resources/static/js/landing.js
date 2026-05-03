@@ -98,19 +98,55 @@
         if (!story || phases.length === 0) return;
 
         let activeIndex = 0;
+        let timelinePoints = [];
         let sweepTimer;
+        let ticking = false;
 
-        function setActive(nextIndex) {
-            if (nextIndex === activeIndex) return;
-            activeIndex = nextIndex;
-            const progress = phases.length === 1 ? 0 : (activeIndex / (phases.length - 1)) * 100;
-            story.style.setProperty('--timeline-progress', `${progress}%`);
-            story.style.setProperty('--timeline-sweep', `${Math.max(0, Math.min(100, progress))}%`);
+        function measureTimeline() {
+            const storyRect = story.getBoundingClientRect();
+            timelinePoints = phases.map((phase) => {
+                const dot = phase.querySelector('.phase-dot');
+                const rect = dot.getBoundingClientRect();
+                return {
+                    phase,
+                    x: rect.left + rect.width / 2 - storyRect.left,
+                    y: rect.top + rect.height / 2 - storyRect.top,
+                    viewportY: rect.top + rect.height / 2
+                };
+            });
+
+            const first = timelinePoints[0];
+            const last = timelinePoints[timelinePoints.length - 1];
+            if (!first || !last) return;
+
+            story.style.setProperty('--timeline-x', `${first.x}px`);
+            story.style.setProperty('--timeline-start', `${first.y}px`);
+            story.style.setProperty('--timeline-height', `${Math.max(1, last.y - first.y)}px`);
+            updateProgress(false);
+        }
+
+        function updateProgress(animateSweep) {
+            const first = timelinePoints[0];
+            const current = timelinePoints[activeIndex];
+            if (!first || !current) return;
+
+            const progress = Math.max(0, current.y - first.y);
+            story.style.setProperty('--timeline-progress', `${progress}px`);
+            story.style.setProperty('--timeline-sweep', `${progress}px`);
+
+            if (!animateSweep) return;
+
             story.classList.remove('is-traveling');
             void story.offsetWidth;
             story.classList.add('is-traveling');
             window.clearTimeout(sweepTimer);
             sweepTimer = window.setTimeout(() => story.classList.remove('is-traveling'), 780);
+        }
+
+        function setActive(nextIndex) {
+            if (nextIndex === activeIndex) return;
+            activeIndex = nextIndex;
+            updateProgress(true);
 
             phases.forEach((phase, index) => {
                 phase.classList.toggle('is-active', index === activeIndex);
@@ -118,24 +154,54 @@
             });
         }
 
-        const observer = new IntersectionObserver((entries) => {
-            let bestEntry = null;
-            entries.forEach((entry) => {
-                if (!entry.isIntersecting) return;
-                if (!bestEntry || entry.intersectionRatio > bestEntry.intersectionRatio) {
-                    bestEntry = entry;
+        function syncActiveFromScroll() {
+            ticking = false;
+            if (timelinePoints.length !== phases.length) {
+                measureTimeline();
+            } else {
+                const storyRect = story.getBoundingClientRect();
+                timelinePoints.forEach((point) => {
+                    const dot = point.phase.querySelector('.phase-dot');
+                    const rect = dot.getBoundingClientRect();
+                    point.x = rect.left + rect.width / 2 - storyRect.left;
+                    point.y = rect.top + rect.height / 2 - storyRect.top;
+                    point.viewportY = rect.top + rect.height / 2;
+                });
+            }
+
+            const focusY = window.innerHeight * 0.46;
+            let nextIndex = activeIndex;
+            let minDistance = Infinity;
+            timelinePoints.forEach((point, index) => {
+                const distance = Math.abs(point.viewportY - focusY);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    nextIndex = index;
                 }
             });
-            if (!bestEntry) return;
-            setActive(Number(bestEntry.target.getAttribute('data-phase-index') || 0));
-        }, { threshold: [0.32, 0.48, 0.64], rootMargin: '-22% 0px -28% 0px' });
+            if (nextIndex === activeIndex) {
+                updateProgress(false);
+                return;
+            }
+            setActive(nextIndex);
+        }
+
+        function requestSync() {
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(syncActiveFromScroll);
+        }
 
         phases.forEach((phase, index) => {
             phase.classList.toggle('is-active', index === 0);
-            observer.observe(phase);
+            phase.classList.toggle('is-past', false);
         });
-        story.style.setProperty('--timeline-progress', '0%');
-        story.style.setProperty('--timeline-sweep', '0%');
+
+        window.addEventListener('resize', measureTimeline);
+        window.addEventListener('scroll', requestSync, { passive: true });
+        window.addEventListener('load', measureTimeline);
+        measureTimeline();
+        requestSync();
     }
 
     function hasWebGL() {
