@@ -1,10 +1,10 @@
 :root {
-  --bg: #0a0e1a;
-  --bg-2: #101827;
+  --bg: #071014;
+  --bg-2: #0d1820;
   --panel: rgba(244, 250, 248, 0.075);
   --panel-strong: rgba(244, 250, 248, 0.12);
   --text: #f7fbfa;
-  --muted: rgba(255, 255, 255, 0.72);
+  --muted: #a9bbb8;
   --line: rgba(244, 250, 248, 0.14);
   --line-strong: rgba(244, 250, 248, 0.28);
   --mint: #84dcc6;
@@ -50,24 +50,10 @@ a {
 
 .scene-wrap {
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: auto;
-  width: 50vw;
-  z-index: 1;
-  overflow: hidden;
-  pointer-events: none;
-  background: #0a0e1a;
-}
-
-.scene-wrap::before {
-  content: "";
-  position: absolute;
   inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  background: linear-gradient(to right, #0a0e1a 0%, transparent 25%);
+  z-index: 0;
+  overflow: hidden;
+  background: #071014;
 }
 
 #timetableScene,
@@ -80,11 +66,9 @@ a {
 
 #timetableScene {
   display: block;
-  z-index: 1;
 }
 
 .webgl-fallback {
-  z-index: 0;
   opacity: 0;
   pointer-events: none;
   background:
@@ -115,7 +99,7 @@ body.no-webgl #timetableScene {
 .soft-grid {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: 1;
   pointer-events: none;
   opacity: 0.18;
   mask-image: linear-gradient(to bottom, black, transparent 72%);
@@ -240,7 +224,6 @@ body.no-webgl #timetableScene {
 }
 
 .hero {
-  position: relative;
   min-height: 780px;
   display: grid;
   grid-template-columns: minmax(0, 640px) minmax(280px, 360px);
@@ -248,29 +231,18 @@ body.no-webgl #timetableScene {
   justify-content: space-between;
   gap: 64px;
   padding: 86px 0 130px;
-  overflow: hidden;
 }
 
 .hero-copy {
-  position: relative;
-  z-index: 10;
-  max-width: min(680px, calc(50vw - 64px));
-  padding: 18px 0;
+  max-width: 680px;
 }
 
 .eyebrow {
-  display: inline-flex;
-  align-items: center;
-  width: fit-content;
   margin: 0 0 18px;
-  padding: 5px 14px;
-  border: 0.5px solid rgba(29, 235, 160, 0.30);
-  border-radius: 100px;
-  color: #1DEBA0;
-  background: rgba(29, 235, 160, 0.10);
-  font-size: 12px;
+  color: var(--mint);
+  font-size: 0.82rem;
   font-weight: 800;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -286,15 +258,8 @@ body.no-webgl #timetableScene {
 .hero-subtitle {
   max-width: 620px;
   margin: 26px 0 34px;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--muted);
   font-size: 1.16rem;
-}
-
-.hero-title,
-.hero-subtitle,
-.hero-actions {
-  position: relative;
-  z-index: 10;
 }
 
 .scene-status,
@@ -308,14 +273,8 @@ body.no-webgl #timetableScene {
 }
 
 .scene-status {
-  position: absolute;
-  right: 32px;
-  bottom: 32px;
-  z-index: 9;
-  width: min(360px, calc(50vw - 64px));
-  min-width: min(220px, calc(100% - 64px));
-  max-width: calc(100% - 64px);
-  padding: 16px 20px;
+  align-self: end;
+  padding: 22px;
   transform-style: preserve-3d;
 }
 
@@ -348,21 +307,21 @@ body.no-webgl #timetableScene {
 
 .scene-status strong {
   display: block;
-  margin: 14px 0 8px;
-  font-size: 1.12rem;
+  margin: 20px 0 8px;
+  font-size: 1.35rem;
 }
 
 .scene-status p {
   margin: 0;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 0.88rem;
+  color: var(--muted);
+  font-size: 0.95rem;
 }
 
 .status-metrics {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  margin-top: 14px;
+  margin-top: 20px;
 }
 
 .status-metrics span {
@@ -370,7 +329,7 @@ body.no-webgl #timetableScene {
   padding: 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--muted);
   background: rgba(0, 0, 0, 0.18);
   font-size: 0.78rem;
 }
@@ -607,12 +566,8 @@ body.reduced-motion *::after {
   }
 
   .hero {
-    min-height: 720px;
-    padding: 72px 0 220px;
-  }
-
-  .hero-copy {
-    max-width: min(620px, calc(100% - 24px));
+    min-height: auto;
+    padding: 72px 0 90px;
   }
 
   .hero-title {
@@ -620,10 +575,7 @@ body.reduced-motion *::after {
   }
 
   .scene-status {
-    right: 24px;
-    bottom: 24px;
-    width: min(340px, calc(100% - 48px));
-    max-width: min(340px, calc(100% - 48px));
+    max-width: 480px;
   }
 
   .feature-grid {
@@ -677,16 +629,7 @@ body.reduced-motion *::after {
   }
 
   .scene-status {
-    right: 16px;
-    bottom: 16px;
-    width: calc(100% - 32px);
-    max-width: calc(100% - 32px);
-    min-width: 0;
-    padding: 16px;
-  }
-
-  .status-metrics {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 18px;
   }
 
   .status-metrics {
