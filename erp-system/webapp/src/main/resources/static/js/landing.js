@@ -8,6 +8,7 @@
         initReveal();
         initHoverGlow();
         initSceneStatus();
+        initStoryTimeline();
         initTimetableScene();
     });
 
@@ -58,10 +59,12 @@
         const steps = [
             ['Live Optimization', 'Command preview is warming up', 'Rooms, faculty, and subjects are being mapped into a single scheduling space.', '12', '24', '68%'],
             ['Constraint Intake', 'Every rule becomes visible', 'Availability windows and room capacities separate into readable layers.', '9', '24', '71%'],
+            ['Relationship Map', 'The schedule field is connecting', 'Rooms, subjects, faculty, and sections begin linking into one readable system.', '7', '24', '73%'],
             ['Conflict Scan', 'Pressure points are highlighted', 'Overlaps glow before publication so planners can act early.', '5', '24', '76%'],
-            ['Graph Coloring', 'The engine is resolving overlaps', 'Class blocks move into compatible time and room positions.', '1', '24', '80%'],
-            ['Balanced Plan', 'The final grid is stabilizing', 'Faculty load, classroom use, and section coverage settle into a practical timetable.', '0', '24', '82%'],
-            ['Workflow Ready', 'Generate, inspect, balance, publish', 'The planning loop is arranged into four calm operational steps.', '0', '24', '82%'],
+            ['Load Balance', 'The engine is distributing pressure', 'Faculty hours and room usage are balanced before the grid settles.', '1', '24', '80%'],
+            ['Publish Ready', 'The final grid is stabilizing', 'Faculty load, classroom use, and section coverage settle into a practical timetable.', '0', '24', '82%'],
+            ['Platform View', 'The control center is ready', 'Generate, inspect, adjust, and publish with confidence.', '0', '24', '82%'],
+            ['Workflow Ready', 'Generate, inspect, balance, publish', 'The planning loop is arranged into four calm operational phases.', '0', '24', '82%'],
             ['Publication Ready', 'The timetable is ready to review', 'A clean schedule can now be inspected, adjusted, and shared.', '0', '24', '82%'],
             ['Dashboard Launch', 'Your command center is ready', 'Move from the visual story into the working application.', '0', '24', '82%']
         ];
@@ -87,6 +90,52 @@
 
         document.querySelectorAll('[data-scene-step]').forEach((element) => observer.observe(element));
         window.updateSceneStatus = applyStep;
+    }
+
+    function initStoryTimeline() {
+        const story = document.querySelector('.story');
+        const phases = Array.from(document.querySelectorAll('.story-phase'));
+        if (!story || phases.length === 0) return;
+
+        let activeIndex = 0;
+        let sweepTimer;
+
+        function setActive(nextIndex) {
+            if (nextIndex === activeIndex) return;
+            activeIndex = nextIndex;
+            const progress = phases.length === 1 ? 0 : (activeIndex / (phases.length - 1)) * 100;
+            story.style.setProperty('--timeline-progress', `${progress}%`);
+            story.style.setProperty('--timeline-sweep', `${Math.max(0, Math.min(100, progress))}%`);
+            story.classList.remove('is-traveling');
+            void story.offsetWidth;
+            story.classList.add('is-traveling');
+            window.clearTimeout(sweepTimer);
+            sweepTimer = window.setTimeout(() => story.classList.remove('is-traveling'), 780);
+
+            phases.forEach((phase, index) => {
+                phase.classList.toggle('is-active', index === activeIndex);
+                phase.classList.toggle('is-past', index < activeIndex);
+            });
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            let bestEntry = null;
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                if (!bestEntry || entry.intersectionRatio > bestEntry.intersectionRatio) {
+                    bestEntry = entry;
+                }
+            });
+            if (!bestEntry) return;
+            setActive(Number(bestEntry.target.getAttribute('data-phase-index') || 0));
+        }, { threshold: [0.32, 0.48, 0.64], rootMargin: '-22% 0px -28% 0px' });
+
+        phases.forEach((phase, index) => {
+            phase.classList.toggle('is-active', index === 0);
+            observer.observe(phase);
+        });
+        story.style.setProperty('--timeline-progress', '0%');
+        story.style.setProperty('--timeline-sweep', '0%');
     }
 
     function hasWebGL() {
@@ -496,7 +545,7 @@
 
         function applySceneState(progress) {
             const time = frame * 0.012;
-            const stage = activeStep / 6;
+            const stage = activeStep / 9;
             const conflictFade = Math.max(0, 1 - progress * 2.6);
             const resolved = Math.min(1, Math.max(0, progress * 2.2 - 0.65));
             const panelSpread = 1.15 - Math.min(1, progress * 1.65) * 0.95;

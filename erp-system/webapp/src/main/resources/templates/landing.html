@@ -82,26 +82,59 @@
     </section>
 
     <section class="story container" id="story" aria-label="3D scheduling flow">
-      <article class="story-step reveal-element" data-scene-step="1">
-        <span class="step-index">01</span>
-        <h2>Collect every constraint.</h2>
-        <p>Faculty availability, classroom capacity, section needs, and time-slot limits start as separate floating layers.</p>
+      <div class="story-line" aria-hidden="true">
+        <span class="story-line-base"></span>
+        <span class="story-line-progress"></span>
+        <span class="story-line-sweep"></span>
+      </div>
+
+      <article class="story-phase phase-left reveal-element is-active" data-scene-step="1" data-phase-index="0">
+        <div class="phase-card">
+          <span class="phase-index">01</span>
+          <h2>Collect every constraint.</h2>
+          <p>Faculty availability, classroom capacity, section needs, and time-slot limits start as separate floating layers.</p>
+        </div>
+        <span class="phase-dot" aria-hidden="true"></span>
       </article>
 
-      <article class="story-step reveal-element" data-scene-step="2">
-        <span class="step-index">02</span>
-        <h2>Expose pressure points.</h2>
-        <p>Conflict hotspots become visible before the timetable is published, so the planner sees where the schedule needs attention.</p>
+      <article class="story-phase phase-right reveal-element" data-scene-step="2" data-phase-index="1">
+        <span class="phase-dot" aria-hidden="true"></span>
+        <div class="phase-card">
+          <span class="phase-index">02</span>
+          <h2>Map relationships.</h2>
+          <p>Rooms, subjects, faculty, and sections begin connecting into one visible scheduling field.</p>
+        </div>
       </article>
 
-      <article class="story-step reveal-element" data-scene-step="3">
-        <span class="step-index">03</span>
-        <h2>Resolve and align.</h2>
-        <p>The graph-coloring scheduler separates overlaps, distributes faculty load, and settles the final grid into a clean plan.</p>
+      <article class="story-phase phase-left reveal-element" data-scene-step="3" data-phase-index="2">
+        <div class="phase-card">
+          <span class="phase-index">03</span>
+          <h2>Expose pressure points.</h2>
+          <p>Conflict hotspots become visible before the timetable is published, so planners know where attention is needed.</p>
+        </div>
+        <span class="phase-dot" aria-hidden="true"></span>
+      </article>
+
+      <article class="story-phase phase-right reveal-element" data-scene-step="4" data-phase-index="3">
+        <span class="phase-dot" aria-hidden="true"></span>
+        <div class="phase-card">
+          <span class="phase-index">04</span>
+          <h2>Balance the load.</h2>
+          <p>The optimizer distributes faculty hours and room usage so one resource is not carrying the whole week.</p>
+        </div>
+      </article>
+
+      <article class="story-phase phase-left reveal-element" data-scene-step="5" data-phase-index="4">
+        <div class="phase-card">
+          <span class="phase-index">05</span>
+          <h2>Publish with confidence.</h2>
+          <p>The final grid settles into a clean timetable that departments can review, adjust, and share.</p>
+        </div>
+        <span class="phase-dot" aria-hidden="true"></span>
       </article>
     </section>
 
-    <section class="section container" id="features" data-scene-step="4">
+    <section class="section container" id="features" data-scene-step="6">
       <div class="section-header reveal-element">
         <p class="eyebrow">Built for daily academic operations</p>
         <h2>Useful depth, not decorative motion.</h2>
@@ -129,7 +162,7 @@
       </div>
     </section>
 
-    <section class="section product-flow container" id="workflow" data-scene-step="5">
+    <section class="section product-flow container" id="workflow" data-scene-step="7">
       <div class="section-header reveal-element">
         <p class="eyebrow">A calmer planning loop</p>
         <h2>Generate, inspect, balance, publish.</h2>
@@ -160,7 +193,7 @@
       </div>
     </section>
 
-    <section class="section preview container" id="preview" data-scene-step="6">
+    <section class="section preview container" id="preview" data-scene-step="8">
       <div class="preview-copy reveal-element">
         <p class="eyebrow">Publication preview</p>
         <h2>From scattered requests to a stable timetable.</h2>
@@ -196,7 +229,7 @@
       </div>
     </section>
 
-    <section class="cta container" id="cta" data-scene-step="7">
+    <section class="cta container" id="cta" data-scene-step="9">
       <div class="cta-glow" aria-hidden="true"></div>
       <div class="cta-copy reveal-element">
         <p class="eyebrow">Ready for the dashboard</p>
