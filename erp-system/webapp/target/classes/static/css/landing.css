@@ -77,8 +77,8 @@ a {
 
 #timetableScene {
   display: block;
-  opacity: 0.84;
-  filter: saturate(0.92) contrast(1.04);
+  opacity: 0.96;
+  filter: saturate(1.08) contrast(1.08);
 }
 
 .webgl-fallback {
@@ -92,11 +92,12 @@ a {
 }
 
 body.no-webgl .webgl-fallback {
-  opacity: 1;
+  opacity: 0.5;
 }
 
 body.no-webgl #timetableScene {
-  display: none;
+  display: block;
+  opacity: 1;
 }
 
 .grain-overlay {
@@ -120,6 +121,7 @@ body.no-webgl #timetableScene {
     linear-gradient(rgba(247, 251, 250, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(247, 251, 250, 0.05) 1px, transparent 1px);
   background-size: 84px 84px;
+  animation: grid-drift 22s linear infinite;
 }
 
 .landing-shell {
@@ -352,6 +354,7 @@ body.no-webgl #timetableScene {
   align-self: end;
   padding: 22px;
   transform-style: preserve-3d;
+  animation: panel-breathe 7s ease-in-out infinite;
 }
 
 .status-header {
@@ -501,6 +504,7 @@ body.no-webgl #timetableScene {
   box-shadow: 0 22px 72px rgba(1, 7, 10, 0.24);
   backdrop-filter: blur(14px);
   transition: transform 360ms var(--ease), border-color 360ms var(--ease), background 360ms var(--ease), box-shadow 360ms var(--ease);
+  animation: panel-breathe 8s ease-in-out infinite;
 }
 
 .phase-left .phase-card {
@@ -666,6 +670,24 @@ body.no-webgl #timetableScene {
   overflow: hidden;
   transform-style: preserve-3d;
   transition: transform 160ms ease-out, border-color 180ms var(--ease);
+  animation: panel-breathe 8.5s ease-in-out infinite;
+}
+
+.feature-card:nth-child(2),
+.flow-card:nth-child(2),
+.story-phase:nth-child(2n) .phase-card {
+  animation-delay: -1.8s;
+}
+
+.feature-card:nth-child(3),
+.flow-card:nth-child(3),
+.story-phase:nth-child(3n) .phase-card {
+  animation-delay: -3.2s;
+}
+
+.flow-card,
+.preview-panel {
+  animation: panel-breathe 9s ease-in-out infinite;
 }
 
 .feature-card::after,
@@ -829,6 +851,23 @@ body.no-webgl #timetableScene {
   to {
     opacity: 0.64;
     transform: translateY(-8px);
+  }
+}
+
+@keyframes grid-drift {
+  to {
+    background-position: 84px 84px;
+  }
+}
+
+@keyframes panel-breathe {
+  0%, 100% {
+    box-shadow: 0 24px 90px var(--shadow);
+    filter: saturate(1);
+  }
+  50% {
+    box-shadow: 0 28px 100px rgba(1, 7, 10, 0.58), 0 0 34px rgba(132, 220, 198, 0.08);
+    filter: saturate(1.08);
   }
 }
 

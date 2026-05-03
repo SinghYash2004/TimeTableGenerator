@@ -213,10 +213,192 @@
         }
     }
 
+    function initCanvasFallback(canvas) {
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        const subjects = ['PHY', 'MATH', 'CS', 'ENG', 'CHEM', 'BIO', 'AI', 'DSA', 'LAB', 'ECO', 'OS', 'DBMS'];
+        const nodes = Array.from({ length: 28 }, (_, index) => ({
+            x: Math.random(),
+            y: Math.random(),
+            phase: index * 0.43,
+            conflict: index % 7 === 0
+        }));
+        let pointerX = 0;
+        let pointerY = 0;
+        let scrollProgress = 0;
+        let start = performance.now();
+
+        function resizeFallback() {
+            const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+            canvas.width = Math.floor(window.innerWidth * dpr);
+            canvas.height = Math.floor(window.innerHeight * dpr);
+            canvas.style.width = `${window.innerWidth}px`;
+            canvas.style.height = `${window.innerHeight}px`;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+
+        function updateFallbackScroll() {
+            const max = document.documentElement.scrollHeight - window.innerHeight;
+            scrollProgress = max > 0 ? window.scrollY / max : 0;
+        }
+
+        function drawRoundedRect(x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+
+        function drawScene(now) {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const t = (now - start) / 1000;
+            const driftX = Math.sin(t * 0.26) * 22 + pointerX * 18;
+            const driftY = Math.cos(t * 0.22) * 14 + pointerY * 14;
+            const gridX = width * 0.62 + driftX - scrollProgress * width * 0.18;
+            const gridY = height * 0.46 + driftY - scrollProgress * 80;
+            const tilt = -0.28 + Math.sin(t * 0.18) * 0.04 + pointerX * 0.08;
+            const cellW = Math.max(58, Math.min(92, width * 0.062));
+            const cellH = Math.max(34, Math.min(52, height * 0.055));
+
+            ctx.clearRect(0, 0, width, height);
+            ctx.save();
+            ctx.fillStyle = '#060b12';
+            ctx.fillRect(0, 0, width, height);
+
+            const glow = ctx.createRadialGradient(width * 0.72, height * 0.34, 0, width * 0.72, height * 0.34, width * 0.46);
+            glow.addColorStop(0, 'rgba(132,220,198,0.20)');
+            glow.addColorStop(0.42, 'rgba(125,183,255,0.10)');
+            glow.addColorStop(1, 'rgba(6,11,18,0)');
+            ctx.fillStyle = glow;
+            ctx.fillRect(0, 0, width, height);
+
+            nodes.forEach((node, index) => {
+                const x = node.x * width + Math.sin(t * 0.6 + node.phase) * 24;
+                const y = node.y * height + Math.cos(t * 0.5 + node.phase) * 20;
+                const pulse = node.conflict ? (Math.sin(t * 4 + index) + 1) * 0.5 : (Math.sin(t * 1.8 + index) + 1) * 0.5;
+                ctx.beginPath();
+                ctx.arc(x, y, node.conflict ? 3.5 + pulse * 4 : 2 + pulse * 1.2, 0, Math.PI * 2);
+                ctx.fillStyle = node.conflict && scrollProgress < 0.55
+                    ? `rgba(255,159,139,${0.22 + pulse * 0.34})`
+                    : `rgba(132,220,198,${0.10 + pulse * 0.18})`;
+                ctx.shadowBlur = node.conflict ? 22 : 10;
+                ctx.shadowColor = node.conflict ? 'rgba(255,159,139,0.58)' : 'rgba(132,220,198,0.32)';
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            });
+
+            ctx.save();
+            ctx.translate(gridX, gridY);
+            ctx.rotate(tilt);
+            ctx.transform(1, -0.18, 0.16, 0.86, 0, 0);
+
+            for (let row = 0; row < 4; row += 1) {
+                for (let col = 0; col < 6; col += 1) {
+                    const x = (col - 3) * cellW;
+                    const y = (row - 2) * cellH;
+                    const breathe = Math.sin(t * 1.6 + row * 0.8 + col * 0.4) * 3;
+                    const label = subjects[(row * 6 + col) % subjects.length];
+                    const time = `${9 + col}${col < 3 ? 'A' : 'P'}`;
+                    ctx.save();
+                    ctx.translate(x + Math.sin(t * 0.8 + col) * 5, y + breathe);
+                    drawRoundedRect(0, 0, cellW * 0.82, cellH * 0.74, 7);
+                    ctx.fillStyle = `rgba(${col % 2 ? '125,183,255' : '132,220,198'},0.58)`;
+                    ctx.fill();
+                    ctx.strokeStyle = 'rgba(247,251,250,0.34)';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                    ctx.fillStyle = '#f7fbfa';
+                    ctx.font = '800 12px Inter, Arial, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(label, cellW * 0.41, cellH * 0.31);
+                    ctx.fillStyle = 'rgba(247,251,250,0.72)';
+                    ctx.font = '700 9px Inter, Arial, sans-serif';
+                    ctx.fillText(time, cellW * 0.41, cellH * 0.55);
+                    ctx.restore();
+                }
+            }
+
+            const cards = [
+                ['Physics', 'Room 301', '9:00 AM', false],
+                ['Math', 'Room 201', '10:00 AM', false],
+                ['English', 'Room 118', '11:00 AM', scrollProgress < 0.48]
+            ];
+            cards.forEach((card, index) => {
+                const x = (index - 1.45) * cellW * 1.65;
+                const y = -cellH * 2.65 + Math.sin(t * 1.1 + index) * 5;
+                drawRoundedRect(x, y, cellW * 1.28, cellH * 0.86, 8);
+                ctx.fillStyle = card[3] ? 'rgba(72,22,22,0.76)' : 'rgba(7,17,24,0.76)';
+                ctx.fill();
+                ctx.strokeStyle = card[3] ? 'rgba(255,159,139,0.84)' : 'rgba(132,220,198,0.62)';
+                ctx.stroke();
+                ctx.fillStyle = '#f7fbfa';
+                ctx.font = '800 12px Inter, Arial, sans-serif';
+                ctx.fillText(card[0], x + cellW * 0.64, y + 17);
+                ctx.fillStyle = card[3] ? '#ffb5a5' : '#c8fff2';
+                ctx.font = '700 9px Inter, Arial, sans-serif';
+                ctx.fillText(card[3] ? `${card[2]} CONFLICT` : `${card[1]} ${card[2]}`, x + cellW * 0.64, y + 34);
+            });
+
+            ctx.strokeStyle = `rgba(132,220,198,${0.18 + Math.sin(t * 2.4) * 0.08})`;
+            ctx.lineWidth = 1.5;
+            for (let i = 0; i < 4; i += 1) {
+                ctx.beginPath();
+                ctx.moveTo(-cellW * 2.8, -cellH * 1.5 + i * cellH);
+                ctx.bezierCurveTo(-cellW, -cellH * 2 + i * 8, cellW, cellH * 2 - i * 8, cellW * 2.6, -cellH * 1.2 + i * cellH);
+                ctx.stroke();
+            }
+
+            const scanY = -cellH * 2.1 + ((Math.sin(t * 1.2) + 1) / 2) * cellH * 4.4;
+            const scanGradient = ctx.createLinearGradient(-cellW * 3, scanY, cellW * 3, scanY);
+            scanGradient.addColorStop(0, 'rgba(132,220,198,0)');
+            scanGradient.addColorStop(0.5, 'rgba(132,220,198,0.64)');
+            scanGradient.addColorStop(1, 'rgba(132,220,198,0)');
+            ctx.strokeStyle = scanGradient;
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(-cellW * 3.1, scanY);
+            ctx.lineTo(cellW * 3.1, scanY);
+            ctx.stroke();
+
+            ctx.restore();
+            ctx.restore();
+
+            if (!prefersReducedMotion) {
+                requestAnimationFrame(drawScene);
+            }
+        }
+
+        window.addEventListener('resize', resizeFallback);
+        window.addEventListener('scroll', updateFallbackScroll, { passive: true });
+        window.addEventListener('mousemove', (event) => {
+            pointerX = (event.clientX / window.innerWidth - 0.5) * 2;
+            pointerY = (event.clientY / window.innerHeight - 0.5) * 2;
+        }, { passive: true });
+
+        resizeFallback();
+        updateFallbackScroll();
+        requestAnimationFrame(drawScene);
+    }
+
     function initTimetableScene() {
         const canvas = document.getElementById('timetableScene');
-        if (!canvas || !window.THREE || !hasWebGL()) {
+        if (!canvas) {
             document.body.classList.add('no-webgl');
+            return;
+        }
+
+        if (!window.THREE || !hasWebGL()) {
+            document.body.classList.add('no-webgl');
+            initCanvasFallback(canvas);
             return;
         }
 
@@ -292,6 +474,7 @@
         createScheduleModel();
         createNetworkModel();
         createFieldLines();
+        schedule.scale.set(1.16, 1.16, 1.16);
 
         window.addEventListener('resize', resize);
         window.addEventListener('scroll', updateScroll, { passive: true });
@@ -369,7 +552,7 @@
                             col,
                             subject,
                             timeLabel,
-                            title: `${subject} · ${timeLabel} · Layer ${layer + 1}`,
+                            title: `${subject} - ${timeLabel} - Layer ${layer + 1}`,
                             details: 'Labeled timetable block checked against availability, capacity, and workload.',
                             step: 3 + layer
                         };
@@ -545,7 +728,7 @@
             texture.anisotropy = 2;
 
             const label = new THREE.Mesh(
-                new THREE.PlaneGeometry(0.46, 0.25),
+                new THREE.PlaneGeometry(0.56, 0.31),
                 new THREE.MeshBasicMaterial({
                     map: texture,
                     transparent: true,
@@ -587,11 +770,11 @@
 
         function createScanBeam() {
             scanBeam = new THREE.Mesh(
-                new THREE.BoxGeometry(6.4, 0.012, 0.06),
+                new THREE.BoxGeometry(6.7, 0.018, 0.08),
                 new THREE.MeshBasicMaterial({
                     color: colors.mint,
                     transparent: true,
-                    opacity: 0.34,
+                    opacity: 0.48,
                     depthWrite: false
                 })
             );
@@ -769,13 +952,13 @@
 
             connectionLines.forEach((line, index) => {
                 const glow = Math.max(0, Math.sin(ambient * 2.2 + line.userData.phase));
-                line.material.opacity = line.userData.baseOpacity + glow * 0.16 + stage * 0.02;
+                line.material.opacity = line.userData.baseOpacity + glow * 0.22 + stage * 0.03;
             });
 
             if (scanBeam) {
                 const scan = (Math.sin(ambient * 1.35) + 1) / 2;
                 scanBeam.position.z = -1.65 + scan * 3.30;
-                scanBeam.material.opacity = Math.max(0.04, 0.12 + Math.sin(ambient * 1.35 + Math.PI / 2) * 0.18);
+                scanBeam.material.opacity = Math.max(0.08, 0.22 + Math.sin(ambient * 1.35 + Math.PI / 2) * 0.26);
             }
 
             ambientNodes.forEach((node, index) => {
